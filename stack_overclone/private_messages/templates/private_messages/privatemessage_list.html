@@ -2,7 +2,6 @@
 {% block content %}
   <h1>Inbox</h1>
   {% for message in users_private_messages  %}
-    <h3>Message: {{message.message}}</h3>
-    <p>subject: <a href="#">{{message.subject}}</a>  sent by: <a href="#">{{message.sender}}</a></p>
+  {% include "private_messages/_message.html" %}
   {% endfor %}
 {% endblock %}

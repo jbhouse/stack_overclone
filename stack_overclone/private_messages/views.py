@@ -34,8 +34,13 @@ class PrivateMessageList(generic.ListView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['users_private_messages'] = self.message_recipient.recipient.all()
+        context['users_private_messages'] = self.message_recipient.recipient.all().order_by('-created_at')
         return context
 
 class PrivateMessageDetail(SelectRelatedMixin,generic.DetailView):
     model = PrivateMessage
+    select_related = ('sender','recipient')
+
+    def query_set(self):
+        queryset = super().get_queryset()
+        return queryset.filter(recipient = self.request.user)
