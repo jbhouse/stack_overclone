@@ -13,4 +13,7 @@ urlpatterns = [
     url(r'^details/(?P<pk>\d+)/$',
     views.PrivateMessageDetail.as_view(),
     name='detail'),
+    url(r'^delete/(?P<pk>\d+)/$',
+    views.DeletePrivateMessage.as_view(),
+    name='delete'),
 ]
