@@ -28,8 +28,8 @@
           <li><a href="#"class="btn btn-simple">Tags</a></li>
           <li><a href="#"class="btn btn-simple">Users</a></li>
           <li><a href="#"class="btn btn-simple">Profile</a></li>
-          <li><a href="#"class="btn btn-simple">Messages</a></li>
-          <li><a href="#"class="btn btn-simple">Log Out</a></li>
+          <li><a href="{% url 'private_messages:list' %}"class="btn btn-simple">Messages</a></li>
+          <li><a href="{% url 'accounts:logout' %}"class="btn btn-simple">Log Out</a></li>
         {% else %}
           <li><a href="#"class="btn btn-simple">Questions</a></li>
           <li><a href="{% url 'accounts:login' %}">Log In</a></li>
