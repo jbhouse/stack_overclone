@@ -33,7 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'bootstrap3',
     'comments',
-    'posts',
+    'questions',
+    'private_messages',
+    'tags',
     'answers',
     'accounts',
     'django.contrib.admin',
