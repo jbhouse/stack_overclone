@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 # Create your views here.
 
@@ -44,3 +45,16 @@ class PrivateMessageDetail(SelectRelatedMixin,generic.DetailView):
     def query_set(self):
         queryset = super().get_queryset()
         return queryset.filter(recipient = self.request.user)
+
+class DeletePrivateMessage(LoginRequiredMixin,SelectRelatedMixin,generic.DeleteView):
+    model = PrivateMessage
+    select_related = ('sender','recipient')
+    success_url = reverse_lazy('private_messages:list')
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(recipient = self.request.user)
+
+    def delete(self,*args,**kwargs):
+        messages.success(self.request,'Message Deleted')
+        return super().delete(*args,**kwargs)
