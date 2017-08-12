@@ -24,7 +24,8 @@
 
       <ul class='nav navbar-nav navbar-right'>
         {% if user.is_authenticated %}
-          <li><a href="#" class="btn btn-simple">Questions</a></li>
+          <li><a href="{% url 'questions:new_question' %}" class="btn btn-simple">New Question</a></li>
+          <li><a href="{% url 'questions:list' %}" class="btn btn-simple">Questions</a></li>
           <li><a href="#"class="btn btn-simple">Tags</a></li>
           <li><a href="#"class="btn btn-simple">Users</a></li>
           <li><a href="#"class="btn btn-simple">Profile</a></li>
