@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+  {% for question in user_questions %}
+  {% include "questions/_question.html" with question=question %}
+  {% endfor %}
+{% endblock %}

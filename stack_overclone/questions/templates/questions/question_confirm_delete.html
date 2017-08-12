@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-  {% include "private_messages/_message.html" with message=object hide_delete=True %}
+  {% include "questions/_question.html" with question=object hide_delete=True %}
   <form method="POST">
     {% csrf_token %}
     <input type="submit" value="Confirm Delete" class="btn btn-danger btn-large">
-    <a href="{% url 'private_messages:detail' pk=object.pk %}" class="btn btn-default">Cancel</a>
+    <a href="{% url 'questions:detail' pk=object.pk %}" class="btn btn-default">Cancel</a>
   </form>
 {% endblock %}
