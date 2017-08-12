@@ -25,6 +25,11 @@ class QuestionList(generic.ListView):
     model = Question
     template_name = 'questions/list.html'
 
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_list'] = super().get_queryset().order_by('-created_at')
+        return context
+
 class DeleteQuestion(LoginRequiredMixin,generic.DeleteView):
     model = Question
     success_url = reverse_lazy('questions:list')
