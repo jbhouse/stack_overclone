@@ -1,4 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>hi</h1>
+  <h1>{{user.username}}'s answers</h1>
+  {% for answer in user_answers %}
+    <p><a href="{% url 'questions:detail' pk=answer.question.id %}">{{answer.text}}</a></p>
+  {% endfor %}
 {% endblock %}
