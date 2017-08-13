@@ -15,7 +15,16 @@
         </a>
     {% endif %}
   </p>
-  <h3>Answers</h3>
+  <h3>
+    Answers
+  </h3>
+  {% for answer in question.answers.all %}
+    <p>{{answer.text}}</p>
+    <p>answered by: <a href="#">{{answer.user.username}}</a> on: {{answer.created_at}}</p>
+  {% endfor %}
+  <h3>
+    <a href="{% url 'questions:add_answer' pk=question.pk %}">Add an answer</a>
+  </h3>
   <h3>Comments</h3>
   <h3>Tags</h3>
   <h3>Votes</h3>

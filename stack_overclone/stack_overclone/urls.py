@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^$',views.HomePage.as_view(),name='home'),
     url(r'^admin/', admin.site.urls),
     url(r'^questions/',include('questions.urls',namespace='questions')),
+    url(r'^answers/',include('answers.urls',namespace='answers')),
     url(r'^messages/',include('private_messages.urls',namespace='private_messages')),
     url(r'^accounts/',include('accounts.urls',namespace='accounts')),
     url(r'^accounts/',include('django.contrib.auth.urls')),
