@@ -10,7 +10,7 @@ from braces.views import SelectRelatedMixin
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+# from django.shortcuts import get_object_or_404
 from django.contrib import messages
 
 # Create your views here.
