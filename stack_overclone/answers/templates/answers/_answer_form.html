@@ -1,8 +1,0 @@
-{% load bootstrap3 %}
-{% block content %}
-    <form method="POST" class="answer-form">
-      {% csrf_token %}
-      {% bootstrap_form form %}
-      <button type="submit" class="save btn btn-default">Post Answer</button>
-    </form>
-{% endblock %}

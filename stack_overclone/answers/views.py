@@ -22,18 +22,18 @@ User = get_user_model()
 #         self.object.save()
 #         return super().form_valid(form)
 
-class AnswerList(generic.ListView):
-    model = Answer
-    template_name = 'answers/list.html'
+# class AnswerList(generic.ListView):
+#     model = Answer
+#     template_name = 'answers/list.html'
 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['question_list'] = super().get_queryset().order_by('-created_at')
-        return context
+    # def get_context_data(self,**kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['question_list'] = super().get_queryset().order_by('-created_at')
+    #     return context
 
 class DeleteAnswer(LoginRequiredMixin,generic.DeleteView):
     model = Answer
-    success_url = reverse_lazy('answers:list')
+    success_url = reverse_lazy('questions:list')
 
 class AnswerDetail(generic.DetailView):
     model = Question
