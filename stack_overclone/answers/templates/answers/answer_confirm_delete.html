@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  {% include "answers/_answer.html" with answer=object hide_delete=True %}
+  <form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Confirm Delete" class="btn btn-danger btn-large">
+    <a href="{% url 'questions:list' %}" class="btn btn-default">Cancel</a>
+  </form>
+{% endblock %}
