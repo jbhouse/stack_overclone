@@ -20,3 +20,5 @@ Stretch Goals-
   Hot/Featured Questions
   Page views (For questions)
   Search Bar
+
+to run database populating script: python manage.py poulate_db
