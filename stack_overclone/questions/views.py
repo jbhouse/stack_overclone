@@ -43,9 +43,10 @@ class CreateQuestion(generic.TemplateView,SelectRelatedMixin,LoginRequiredMixin)
             tagform = SelectTagForm(request.POST)
             if tagform.is_valid():
                 tags = tagform.cleaned_data.get('Tags')
-            tag = get_object_or_404(Tag, pk=tags[0])
-            tag.question.add(question)
-            tag.save()
+            for tag_instance in tags:
+                tag = get_object_or_404(Tag, pk=int(tag_instance))
+                tag.question.add(question)
+                tag.save()
         view = add_tag_to_question(request)
         return redirect('questions:list')
 
@@ -107,7 +108,7 @@ class QuestionDisplay(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(QuestionDisplay, self).get_context_data(**kwargs)
         Q = get_object_or_404(Question, pk=self.kwargs['pk'])
-        self.questions_tags = Tag.objects.prefetch_related("question").get(question=Q)
+        self.questions_tags = Tag.objects.prefetch_related("question").filter(question=Q)
         context['form'] = AnswerForm()
         context['questionstags'] = self.questions_tags
         return context
