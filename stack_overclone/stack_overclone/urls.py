@@ -20,6 +20,7 @@ from . import views
 urlpatterns = [
     url(r'^$',views.HomePage.as_view(),name='home'),
     url(r'^admin/', admin.site.urls),
+    url(r'^tags/',include('tags.urls',namespace='tags')),
     url(r'^questions/',include('questions.urls',namespace='questions')),
     url(r'^answers/',include('answers.urls',namespace='answers')),
     url(r'^messages/',include('private_messages.urls',namespace='private_messages')),

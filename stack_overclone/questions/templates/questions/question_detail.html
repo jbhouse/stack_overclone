@@ -40,7 +40,7 @@
   <h3>Tags</h3>
   {% if questionstags %}
     {% for tag in questionstags %}
-      {{tag}}
+      <a href="{% url 'tags:list' pk=tag.pk %}">{{tag}}</a>
     {% endfor %}
   {% endif %}
   <h3>Votes</h3>
