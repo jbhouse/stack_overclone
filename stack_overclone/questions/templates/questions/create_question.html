@@ -4,7 +4,19 @@
   <h1>New Question</h1>
   <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form %}
-    <input type="submit" class="btn btn-primary" value="Post Question">
+    {% bootstrap_form question_form %}
+    <h3>Add Tags</h3>
+      {% for tag in select_tag_form %}
+          <div class="col-md-12 dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ tag.label_tag }}
+                  <span class="caret"></span>
+              </button>
+              <div class="dropdown-menu">
+                  <div><a href="#">{{ tag }}</a></div>
+              </div>
+          </div>
+      {% endfor %}
+    <input type="submit"  class="btn btn-primary" value="Post Question">
+    
   </form>
 {% endblock %}

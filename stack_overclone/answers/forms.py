@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from questions.models import Question
+# from questions.models import Question
 from answers.models import Answer
 
 class AnswerForm(ModelForm):

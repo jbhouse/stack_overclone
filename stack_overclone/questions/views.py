@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.views import View
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -8,9 +9,11 @@ from django.urls import reverse
 from django.http import HttpResponseForbidden
 from . import forms
 from questions.forms import QuestionForm
+from tags.forms import SelectTagForm
 from answers.forms import AnswerForm
 from django.views import generic
 from questions.models import Question
+from tags.models import Tag
 from answers.models import Answer
 from braces.views import SelectRelatedMixin
 from django.core.urlresolvers import reverse_lazy
@@ -19,16 +22,33 @@ from django.http import Http404
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-class CreateQuestion(generic.CreateView,SelectRelatedMixin,LoginRequiredMixin):
-    form_class = forms.QuestionForm
-    success_url = reverse_lazy("questions:list")
+class CreateQuestion(generic.TemplateView,SelectRelatedMixin,LoginRequiredMixin):
     template_name = "questions/create_question.html"
 
-    def form_valid(self,form):
-        self.object = form.save(commit=False)
-        self.object.user_id = self.request.user.id
-        self.object.save()
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        question_form = QuestionForm(self.request.GET or None)
+        select_tag_form = SelectTagForm(self.request.GET or None)
+        context = self.get_context_data(**kwargs)
+        context['question_form'] = question_form
+        context['select_tag_form'] = select_tag_form
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        def add_tag_to_question(request):
+            questionform = QuestionForm(request.POST)
+            if questionform.is_valid():
+                question = questionform.save(commit=False)
+                question.user_id = request.user.id
+                question.save()
+            tagform = SelectTagForm(request.POST)
+            if tagform.is_valid():
+                tags = tagform.cleaned_data.get('Tags')
+            tag = get_object_or_404(Tag, pk=tags[0])
+            tag.question.add(question)
+            tag.save()
+        view = add_tag_to_question(request)
+        return redirect('questions:list')
+
 
 class QuestionList(generic.ListView):
     model = Question
@@ -68,22 +88,17 @@ class QuestionDetail(View):
 
     def post(self, request, *args, **kwargs):
         pk = kwargs['pk']
+        def add_answer_to_question(request, pk):
+            question = get_object_or_404(Question, pk=pk)
+            if request.method == "POST":
+                form = AnswerForm(request.POST)
+                if form.is_valid():
+                    answer = form.save(commit=False)
+                    answer.question = question
+                    answer.user_id = request.user.id
+                    answer.save()
         view = add_answer_to_question(request, pk)
         return redirect('questions:detail', pk=kwargs['pk'])
-
-class Answer(SingleObjectMixin, FormView):
-    template_name = 'questions/question_detail.html'
-    form_class = AnswerForm
-    model = Answer
-
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-        self.object = self.get_object()
-        return super(Answer, self).post(request, *args, **kwargs)
-
-    def get_success_url(self):
-        return reverse_lazy('questions:detail', kwargs={'pk': self.instance.pk})
 
 class QuestionDisplay(generic.DetailView):
     model = Question
@@ -91,19 +106,8 @@ class QuestionDisplay(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(QuestionDisplay, self).get_context_data(**kwargs)
+        Q = get_object_or_404(Question, pk=self.kwargs['pk'])
+        self.questions_tags = Tag.objects.prefetch_related("question").get(question=Q)
         context['form'] = AnswerForm()
+        context['questionstags'] = self.questions_tags
         return context
-
-def add_answer_to_question(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-    if request.method == "POST":
-        form = AnswerForm(request.POST)
-        if form.is_valid():
-            answer = form.save(commit=False)
-            answer.question = question
-            answer.user_id = request.user.id
-            answer.save()
-            return redirect('questions:detail', pk=question.pk)
-    else:
-        form = AnswerForm()
-    return render(request, 'answers/_answer_form.html', {'form': form})
