@@ -104,21 +104,10 @@ class QuestionDisplay(generic.DetailView):
     model = Question
     template_name = 'questions/question_detail.html'
 
-    # def get_queryset(self):
-    # #     Q = get_object_or_404(Question, pk=self.kwargs['pk'])
-    #     self.questions_tags = Tag.objects.prefetch_related("question")
-    #     print('/'*50)
-    #     print(self.questions_tags)
-    #     print('/'*50)
-
     def get_context_data(self, **kwargs):
         context = super(QuestionDisplay, self).get_context_data(**kwargs)
         Q = get_object_or_404(Question, pk=self.kwargs['pk'])
         self.questions_tags = Tag.objects.prefetch_related("question").get(question=Q)
-        print('/'*50)
-        print(self.questions_tags)
         context['form'] = AnswerForm()
-        print('/'*50)
         context['questionstags'] = self.questions_tags
-        # print(context)
         return context

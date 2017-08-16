@@ -13,6 +13,7 @@ User = get_user_model()
 
 class DeleteAnswer(LoginRequiredMixin,generic.DeleteView):
     model = Answer
+    
     success_url = reverse_lazy('questions:list')
 
 class AnswerDetail(generic.DetailView):

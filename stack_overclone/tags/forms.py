@@ -3,16 +3,6 @@ from django import forms
 from tags.models import Tag
 from questions.models import Question
 
-# class SelectTagForm(forms.ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super(SelectTagForm, self).__init__(*args, **kwargs)
-#         self.fields['options'].empty_label = None
-#
-#     class Meta:
-#         model=Tag
-#         fields=('Javascript','Ruby','Python','Node.js','Rails','Django','CSS','HTML')
-#         widgets={'options': forms.CheckboxSelectMultiple()}
-
 class SelectTagForm(forms.Form):
 
     OPTIONS = [

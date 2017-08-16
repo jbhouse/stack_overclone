@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from questions.models import Question
 from django import template
 register = template.Library()
-# Create your models here.
 
 class Tag(models.Model):
     name = models.CharField(max_length=30)
