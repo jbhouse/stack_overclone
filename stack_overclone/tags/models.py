@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.urlresolvers import reverse
+# from django.core.urlresolvers import reverse
 from questions.models import Question
 from django import template
 register = template.Library()

@@ -109,6 +109,19 @@ class QuestionDisplay(generic.DetailView):
         context = super(QuestionDisplay, self).get_context_data(**kwargs)
         Q = get_object_or_404(Question, pk=self.kwargs['pk'])
         self.questions_tags = Tag.objects.prefetch_related("question").filter(question=Q)
-        context['form'] = AnswerForm()
+        context['answer_form'] = AnswerForm()
         context['questionstags'] = self.questions_tags
         return context
+
+def UpVoteQuestion(request, **kwargs):
+    question = get_object_or_404(Question, pk=kwargs['pk'])
+    question.votes += 1
+    question.save()
+    return redirect('questions:detail', pk=kwargs['pk'])
+
+
+def DownVoteQuestion(request, **kwargs):
+    question = get_object_or_404(Question, pk=kwargs['pk'])
+    question.votes -= 1
+    question.save()
+    return redirect('questions:detail', kwargs['pk'])

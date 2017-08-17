@@ -16,6 +16,11 @@
         </a>
     {% endif %}
   </p>
+  <p>vote total: {{question.votes}}</p>
+  <p>
+    <a href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
+    <a href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
+  </p>
   <h3>
     Answers
   </h3>
@@ -32,7 +37,7 @@
   <div class="container">
       <form method="post">
           {% csrf_token %}
-          {% bootstrap_form form %}
+          {% bootstrap_form answer_form %}
           <input type="submit" value="Post Answer" class="btn btn-default">
       </form>
   </div>
