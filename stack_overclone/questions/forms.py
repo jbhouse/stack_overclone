@@ -10,3 +10,15 @@ class QuestionForm(ModelForm):
         super().__init__(*args,**kwargs)
         self.fields['title'].label = 'Title'
         self.fields['details'].label = 'Details'
+
+# class QuestionVotes(ModelForm):
+#     class Meta:
+#         model = Question
+#         fields = ['votes']
+  # <div class="container">
+  #     <form method="post">
+  #         {% csrf_token %}
+  #         {% bootstrap_form question_vote_form %}
+  #         <input type="submit" value="Vote" class="btn btn-default">
+  #     </form>
+  # </div>

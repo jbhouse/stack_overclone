@@ -11,6 +11,7 @@ class Answer(models.Model):
     user = models.ForeignKey(User,related_name='answers')
     created_at = models.DateTimeField(auto_now=True)
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
+    votes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.text
