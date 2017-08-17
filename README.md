@@ -6,11 +6,11 @@ done-
   Private messages
   Questions
   Answers
+  Tags
   
 To do-
   Comments
   Votes
-  Tags
 
   Styling (html and css)
   Responsiveness (javascript and ajax)
