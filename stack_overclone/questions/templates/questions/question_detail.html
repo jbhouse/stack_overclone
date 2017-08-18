@@ -17,6 +17,13 @@
     {% endif %}
   </p>
   <p>vote total: {{question.votes}}</p>
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
   <p>
     <a href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
     <a href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
