@@ -14,6 +14,7 @@ from answers.forms import AnswerForm
 from django.views import generic
 from questions.models import Question
 from tags.models import Tag
+from votes.models import AnswerVote,QuestionVote
 from answers.models import Answer
 from braces.views import SelectRelatedMixin
 from django.core.urlresolvers import reverse_lazy
@@ -21,6 +22,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from django.contrib import messages
 
 class CreateQuestion(generic.TemplateView,SelectRelatedMixin,LoginRequiredMixin):
     template_name = "questions/create_question.html"
@@ -43,10 +45,10 @@ class CreateQuestion(generic.TemplateView,SelectRelatedMixin,LoginRequiredMixin)
             tagform = SelectTagForm(request.POST)
             if tagform.is_valid():
                 tags = tagform.cleaned_data.get('Tags')
-            for tag_instance in tags:
-                tag = get_object_or_404(Tag, pk=int(tag_instance))
-                tag.question.add(question)
-                tag.save()
+                for tag_instance in tags:
+                    tag = get_object_or_404(Tag, pk=int(tag_instance))
+                    tag.question.add(question)
+                    tag.save()
         view = add_tag_to_question(request)
         return redirect('questions:list')
 
@@ -114,14 +116,61 @@ class QuestionDisplay(generic.DetailView):
         return context
 
 def UpVoteQuestion(request, **kwargs):
+    # grab our question instance
     question = get_object_or_404(Question, pk=kwargs['pk'])
+    # check for a validated user
+    if request.user.is_authenticated():
+        user = request.user
+    # get all question votes this user has made
+    users_question_votes = User.objects.prefetch_related('user_question_vote').get(username__iexact=request.user.username)
+    # check if the user has voted on this question
+    if users_question_votes.user_question_vote.all().filter(question = question).exists():
+        # if it does, we set it equal to a nicely named variable
+        user_vote_for_this_question = users_question_votes.user_question_vote.all().filter(question = question).get()
+        # if the user has upvoted this question
+        if user_vote_for_this_question.upvote == True:
+            # we return the view with a message that you can only upvote once
+            messages.add_message(request, messages.INFO, 'You can only upvote this question once')
+            return redirect('questions:detail', pk=kwargs['pk'])
+        # if the user has downvoted this question
+        if user_vote_for_this_question.downvote == True:
+            # we set downvote to false and upvote to true
+            user_vote_for_this_question.upvote = True
+            user_vote_for_this_question.downvote = False
+            # we save this change in state!!!!!!!
+            user_vote_for_this_question.save()
+            question.votes += 2
+            question.save()
+            return redirect('questions:detail', pk=kwargs['pk'])
+    # if they haven't voted on the question yet
+    # create a new vote for this question, linked to this user
+    new_question_vote = QuestionVote.objects.create_question_vote(user, question)
+    new_question_vote.upvote = True
+    new_question_vote.save()
     question.votes += 1
     question.save()
     return redirect('questions:detail', pk=kwargs['pk'])
 
-
 def DownVoteQuestion(request, **kwargs):
     question = get_object_or_404(Question, pk=kwargs['pk'])
+    if request.user.is_authenticated():
+        user = request.user
+    users_question_votes = User.objects.prefetch_related('user_question_vote').get(username__iexact=request.user.username)
+    if users_question_votes.user_question_vote.all().filter(question = question).exists():
+        user_vote_for_this_question = users_question_votes.user_question_vote.all().filter(question = question).get()
+        if user_vote_for_this_question.downvote == True:
+            messages.add_message(request, messages.INFO, 'You can only upvote this question once')
+            return redirect('questions:detail', pk=kwargs['pk'])
+        if user_vote_for_this_question.upvote == True:
+            user_vote_for_this_question.downvote = True
+            user_vote_for_this_question.upvote = False
+            user_vote_for_this_question.save()
+            question.votes -= 2
+            question.save()
+            return redirect('questions:detail', pk=kwargs['pk'])
+    new_question_vote = QuestionVote.objects.create_question_vote(user, question)
+    new_question_vote.downvote = True
+    new_question_vote.save()
     question.votes -= 1
     question.save()
-    return redirect('questions:detail', kwargs['pk'])
+    return redirect('questions:detail', pk=kwargs['pk'])
