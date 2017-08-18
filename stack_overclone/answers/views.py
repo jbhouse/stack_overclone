@@ -11,17 +11,6 @@ from django.http import Http404
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-# class CreateAnswer(generic.CreateView,SelectRelatedMixin,LoginRequiredMixin):
-#     form_class = forms.AnswerForm
-#     success_url = reverse_lazy("questions:detail" pk=question.pk)
-#     template_name = "questions/create_answer.html"
-#
-#     def form_valid(self,form):
-#         self.object = form.save(commit=False)
-#         self.object.user_id = self.request.user.id
-#         self.object.save()
-#         return super().form_valid(form)
-
 class AnswerList(generic.ListView):
     model = Answer
     template_name = 'answers/list.html'

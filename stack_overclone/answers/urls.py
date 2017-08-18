@@ -4,7 +4,6 @@ from . import views
 app_name = 'answers'
 
 urlpatterns = [
-    # url(r'^new/$',views.CreateAnswer.as_view(),name='create'),
     url(r'^for/(?P<slug>[-\w]+)/$',views.AnswerList.as_view(),name='list'),
     url(r'^view/(?P<pk>\d+)/$',views.AnswerDetail.as_view(),name='detail'),
     url(r'^delete/(?P<pk>\d+)/$',views.DeleteAnswer.as_view(),name='delete'),
