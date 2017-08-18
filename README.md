@@ -7,10 +7,11 @@ done-
   Questions
   Answers
   Tags
+  Votes(on questions)
   
 To do-
   Comments
-  Votes
+  Votes(on answers.(almost done))
 
   Styling (html and css)
   Responsiveness (javascript and ajax)
