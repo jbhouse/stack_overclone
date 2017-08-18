@@ -6,6 +6,7 @@ User = get_user_model()
 from django import template
 register = template.Library()
 
+
 class AnswerComment(models.Model):
     text = models.TextField()
     user = models.ForeignKey(User,related_name='users_answer_comment', on_delete=models.CASCADE)

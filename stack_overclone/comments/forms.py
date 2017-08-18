@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from comments.models import AnswerComment,QuestionComment
 
+
 class AnswerCommentForm(ModelForm):
     class Meta:
         model = AnswerComment
