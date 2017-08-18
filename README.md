@@ -2,24 +2,24 @@
 Creating a stack overflow clone using django
 
 done-
-  User accounts
-  Private messages
-  Questions
-  Answers
-  Tags
+  User accounts,
+  Private messages,
+  Questions,
+  Answers,
+  Tags,
   Votes(on questions)
   
 To do-
-  Comments
+  Comments,
   Votes(on answers.(almost done))
 
-  Styling (html and css)
-  Responsiveness (javascript and ajax)
+  Styling (html and css),
+  Responsiveness (javascript and ajax),
   Reformat (make it RESTful)
   
 Stretch Goals-
-  Hot/Featured Questions
-  Page views (For questions)
+  Hot/Featured Questions,
+  Page views (For questions),
   Search Bar
 
-to run database populating script: python manage.py poulate_db
+To run database populating script: python manage.py poulate_db
