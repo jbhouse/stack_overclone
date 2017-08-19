@@ -17,6 +17,12 @@
     {% endif %}
     {% for comment in question_comments %}
       <p>{{comment.text}}</p>
+      {% if user.is_authenticated and comment.user.username == request.user.username %}
+          <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" class="btn btn-simple">
+            <span class="glyphicon glyphicon-remove text-danger"></span>
+            <span class="text-danger icon-label">Delete</span>
+          </a>
+      {% endif %}
     {% endfor %}
     <div class="container">
       <form action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
