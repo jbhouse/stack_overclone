@@ -2,19 +2,24 @@ from django.shortcuts import render
 from django.views import generic
 from answers.models import Answer
 from questions.models import Question
+from comments.models import AnswerComment,QuestionComment
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from comments.forms import AnswerCommentForm,QuestionCommentForm
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render,redirect
 # Create your views here.
-class DeleteAnswerComment(LoginRequiredMixin,generic.DeleteView):
-    model = Answer
-    success_url = reverse_lazy('questions:list')
+def DeleteAnswerComment(request, **kwargs):
+    answer_comment = get_object_or_404(AnswerComment, pk=kwargs['pk'])
+    redirect_pk = answer_comment.answer.question.pk
+    answer_comment.delete()
+    return redirect('questions:detail', redirect_pk)
 
-class DeleteQuestionComment(LoginRequiredMixin,generic.DeleteView):
-    model = Question
-    success_url = reverse_lazy('questions:list')
+def DeleteQuestionComment(request, **kwargs):
+    question_comment = get_object_or_404(QuestionComment, pk=kwargs['pk'])
+    redirect_pk = question_comment.question.pk
+    question_comment.delete()
+    return redirect('questions:detail', redirect_pk)
 
 def CreateAnswerComment(request, **kwargs):
     if request.method == "POST":
