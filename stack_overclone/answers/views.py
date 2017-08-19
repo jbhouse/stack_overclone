@@ -19,9 +19,6 @@ class DeleteAnswer(LoginRequiredMixin,generic.DeleteView):
 
     success_url = reverse_lazy('questions:list')
 
-class AnswerDetail(generic.DetailView):
-    model = Question
-
 class UserAnswers(generic.ListView):
     model = Answer
     template_name = "answers/user_answers.html"

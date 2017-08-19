@@ -15,6 +15,16 @@
           <span class="text-danger icon-label">Delete</span>
         </a>
     {% endif %}
+    {% for comment in question_comments %}
+      <p>{{comment.text}}</p>
+    {% endfor %}
+    <div class="container">
+      <form action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
+          {% csrf_token %}
+          {{question_comment_form.as_p}}
+          <input type="submit" value="Comment on Question" class="btn btn-default">
+      </form>
+    </div>
   </p>
   <p>vote total: {{question.votes}}</p>
   <p>
@@ -25,19 +35,7 @@
     Answers
   </h3>
   {% for answer in question.answers.all %}
-    <p><strong>{{answer.text}}</strong></p>
-    <p>answered by: <a href="#">{{answer.user.username}}</a> on: {{answer.created_at}}</p>
-    <p>vote total: {{answer.votes}}</p>
-    <p>
-      <a href="{% url 'answers:upvote' pk=answer.pk %}">Upvote</a>
-      <a href="{% url 'answers:downvote' pk=answer.pk %}">Downvote</a>
-    </p>
-    {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-        <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" class="btn btn-simple">
-          <span class="glyphicon glyphicon-remove text-danger"></span>
-          <span class="text-danger icon-label">Delete</span>
-        </a>
-    {% endif %}
+    {% include "answers/_answer.html" with answer=answer %}
   {% endfor %}
   <div class="container">
       <form method="post">
@@ -46,12 +44,10 @@
           <input type="submit" value="Post Answer" class="btn btn-default">
       </form>
   </div>
-  <h3>Comments</h3>
   <h3>Tags</h3>
   {% if questionstags %}
     {% for tag in questionstags %}
       <a href="{% url 'tags:list' pk=tag.pk %}">{{tag}}</a>
     {% endfor %}
   {% endif %}
-  <h3>Votes</h3>
 {% endblock %}
