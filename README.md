@@ -1,15 +1,13 @@
 # stack_overclone
 Creating a stack overflow clone using django
 
-done-
+done(all core functionality)-
   User accounts,
   Private messages,
   Questions,
   Answers,
   Tags,
-  Votes
-  
-To do-
+  Votes,
   Comments,
 
   Styling (html and css),
