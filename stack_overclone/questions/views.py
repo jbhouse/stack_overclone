@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.http import HttpResponseForbidden
 from . import forms
 from questions.forms import QuestionForm
+from comments.forms import AnswerCommentForm,QuestionCommentForm
 from tags.forms import SelectTagForm
 from answers.forms import AnswerForm
 from django.views import generic
@@ -110,8 +111,12 @@ class QuestionDisplay(generic.DetailView):
         context = super(QuestionDisplay, self).get_context_data(**kwargs)
         Q = get_object_or_404(Question, pk=self.kwargs['pk'])
         self.questions_tags = Tag.objects.prefetch_related("question").filter(question=Q)
+        self.questions_comments = Question.objects.prefetch_related("question_comment").get(id=Q.pk)
         context['answer_form'] = AnswerForm()
+        context['answer_comment_form'] = AnswerCommentForm()
+        context['question_comment_form'] = QuestionCommentForm()
         context['questionstags'] = self.questions_tags
+        context['question_comments'] = self.questions_comments.question_comment.all()
         return context
 
 def UpVoteQuestion(request, **kwargs):
