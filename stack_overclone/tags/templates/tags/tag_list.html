@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Select a tag to view associated questions</h1>
+  {% for tag in tag_list %}
+    <p><a href="{% url 'tags:detail' pk=tag.pk %}">{{tag}}</a></p>
+  {% endfor %}
+{% endblock %}

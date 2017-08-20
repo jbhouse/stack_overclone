@@ -53,7 +53,7 @@
   <h3>Tags</h3>
   {% if questionstags %}
     {% for tag in questionstags %}
-      <a href="{% url 'tags:list' pk=tag.pk %}">{{tag}}</a>
+      <a href="{% url 'tags:detail' pk=tag.pk %}">{{tag}}</a>
     {% endfor %}
   {% endif %}
 {% endblock %}
