@@ -14,3 +14,7 @@ class TagQuestions(generic.DetailView):
         self.this_tags_questions = Tag.objects.prefetch_related('question').get(id=kwargs['object'].id)
         context["questions_list"] = self.this_tags_questions.question.all()
         return context
+
+class TagList(generic.ListView):
+    model = Tag
+    template_name = "tags/tag_list.html"
