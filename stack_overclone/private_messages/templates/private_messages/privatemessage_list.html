@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Inbox</h1>
-  {% for message in users_private_messages  %}
+  <p><a href="{% url 'private_messages:new_message' %}">New Message</a></p>
+  {% for message in users_inbox  %}
   {% include "private_messages/_message.html" %}
+  {% endfor %}
+  <h1>Sent Messages</h1>
+  {% for message in users_outbox  %}
+  {% include "private_messages/_outbox_message.html" %}
   {% endfor %}
 {% endblock %}

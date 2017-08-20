@@ -17,7 +17,7 @@ from django.contrib import messages
 
 class CreatePrivateMessage(generic.CreateView,SelectRelatedMixin,LoginRequiredMixin):
     form_class = forms.MessageForm
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy('private_messages:list')
     template_name = "private_messages/new_message.html"
 
     def form_valid(self,form):
@@ -32,10 +32,12 @@ class PrivateMessageList(generic.ListView):
 
     def get_queryset(self):
         self.message_recipient = User.objects.prefetch_related('recipient').get(username__iexact=self.request.user.username)
+        self.message_sender = User.objects.prefetch_related('sender').get(username__iexact=self.request.user.username)
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['users_private_messages'] = self.message_recipient.recipient.all().order_by('-created_at')
+        context['users_inbox'] = self.message_recipient.recipient.all().order_by('-created_at')
+        context['users_outbox'] = self.message_sender.sender.all().order_by('-created_at')
         return context
 
 class PrivateMessageDetail(SelectRelatedMixin,generic.DetailView):

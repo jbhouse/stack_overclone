@@ -1,5 +1,13 @@
 <p><strong>{{answer.text}}</strong></p>
-<p>answered by: <a href="#">{{answer.user.username}}</a> on: {{answer.created_at}}</p>
+<p>
+  answered by: <a href="#">{{answer.user.username}}</a> on: {{answer.created_at}}
+  {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
+      <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" class="btn btn-simple">
+        <span class="glyphicon glyphicon-remove text-danger"></span>
+        <span class="text-danger icon-label">Delete</span>
+      </a>
+  {% endif %}
+</p>
 <p>vote total: {{answer.votes}}</p>
 <p>
   <a href="{% url 'answers:upvote' pk=answer.pk %}">Upvote</a>
@@ -21,9 +29,3 @@
       <input type="submit" value="Comment on Answer" class="btn btn-default">
   </form>
 </div>
-{% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-    <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" class="btn btn-simple">
-      <span class="glyphicon glyphicon-remove text-danger"></span>
-      <span class="text-danger icon-label">Delete</span>
-    </a>
-{% endif %}
