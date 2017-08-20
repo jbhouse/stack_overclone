@@ -20,6 +20,7 @@ from answers.models import Answer
 from braces.views import SelectRelatedMixin
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -62,9 +63,11 @@ class QuestionList(generic.ListView):
         context['question_list'] = super().get_queryset().order_by('-created_at')
         return context
 
-class DeleteQuestion(LoginRequiredMixin,generic.DeleteView):
-    model = Question
-    success_url = reverse_lazy('questions:list')
+@login_required
+def DeleteQuestion(request, **kwargs):
+    question = get_object_or_404(Question, pk=kwargs['pk'])
+    question.delete()
+    return redirect('questions:list')
 
 class UserQuestions(generic.ListView):
     model = Question

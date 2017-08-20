@@ -11,12 +11,16 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-class DeleteAnswer(LoginRequiredMixin,generic.DeleteView):
-    model = Answer
-    success_url = reverse_lazy('questions:list')
+@login_required
+def DeleteAnswer(request, **kwargs):
+    answer = get_object_or_404(Answer, pk=kwargs['pk'])
+    redirect_pk = answer.question.pk
+    answer.delete()
+    return redirect('questions:detail', pk=redirect_pk)
 
 class UserAnswers(generic.ListView):
     model = Answer
