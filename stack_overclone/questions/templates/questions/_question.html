@@ -1,7 +1,7 @@
 <h3>
   title: <a href="{% url 'questions:detail' pk=question.pk %}">{{question.title}}</a>
 </h3>
-<p>asked by: <a href="#">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
+<p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
 <p>
   {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
       <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
