@@ -28,7 +28,7 @@
           <li><a href="{% url 'questions:list' %}" class="btn btn-simple">Questions</a></li>
           <li><a href="#"class="btn btn-simple">Tags</a></li>
           <li><a href="#"class="btn btn-simple">Users</a></li>
-          <li><a href="{% url 'questions:by_user' username=user.username %}">Profile</a></li>
+          <li><a href="{% url 'accounts:detail' pk=user.pk %}">Profile</a></li>
           <li><a href="{% url 'private_messages:list' %}"class="btn btn-simple">Messages</a></li>
           <li><a href="{% url 'accounts:logout' %}"class="btn btn-simple">Log Out</a></li>
         {% else %}

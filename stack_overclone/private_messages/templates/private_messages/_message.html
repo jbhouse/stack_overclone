@@ -1,7 +1,7 @@
 <h3 id="subject_line">
   subject: <a href="{% url 'private_messages:detail' pk=message.pk %}">{{message.subject}}</a>
 </h3>
-<p>sent by: <a href="#">{{message.sender}}</a>,  on: {{message.created_at}}</p>
+<p>sent by: <a href="{% url 'accounts:detail' pk=message.sender.id %}">{{message.sender}}</a>,  on: {{message.created_at}}</p>
 <p>
   {% if user.is_authenticated and not hide_delete %}
     <a href="{% url 'private_messages:delete' pk=message.pk %}" title="delete" class="btn btn-simple">
