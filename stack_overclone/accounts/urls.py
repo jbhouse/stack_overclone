@@ -9,4 +9,5 @@ urlpatterns = [
     url(r"logout/$", auth_views.LogoutView.as_view(), name="logout"),
     url(r"signup/$", views.SignUp.as_view(), name="signup"),
     url(r"^profile/(?P<pk>\d+)/$",views.ProfileView.as_view(),name="detail"),
+    url(r'^ajax/validate_username/$', views.validate_username, name='validate_username'),
 ]

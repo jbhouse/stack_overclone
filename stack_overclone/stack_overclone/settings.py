@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # 'floppyforms',
     'votes',
     'bootstrap3',
     'comments',

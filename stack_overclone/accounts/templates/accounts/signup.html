@@ -1,11 +1,32 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
 
+{% block javascript %}
+<script>
+  $("#id_username").change(function () {
+    var username = $(this).val();
+
+    $.ajax({
+      url: '{% url 'accounts:validate_username' %}',
+      data: {
+        'username': username
+      },
+      dataType: 'json',
+      success: function (data) {
+        if (data.is_taken) {
+          alert(data.error_message);
+        }
+      }
+    });
+
+  });
+</script>
+{% endblock %}
+
 {% block content %}
-
 <div class="container">
-
   <h1>Sign Up</h1>
+
   <form method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
@@ -13,5 +34,4 @@
   </form>
 
 </div>
-
 {% endblock %}
