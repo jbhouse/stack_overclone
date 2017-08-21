@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from private_messages.models import PrivateMessage
+from django import forms
 
 class MessageForm(ModelForm):
     class Meta:

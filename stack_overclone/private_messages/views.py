@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from . import forms
 from private_messages.forms import MessageForm
 from django.views import generic
@@ -13,18 +14,14 @@ from django.http import Http404
 # from django.shortcuts import get_object_or_404
 from django.contrib import messages
 
-# Create your views here.
-
-class CreatePrivateMessage(generic.CreateView,SelectRelatedMixin,LoginRequiredMixin):
-    form_class = forms.MessageForm
-    success_url = reverse_lazy('private_messages:list')
+class CreatePrivateMessage(generic.TemplateView,SelectRelatedMixin,LoginRequiredMixin):
     template_name = "private_messages/new_message.html"
 
-    def form_valid(self,form):
-        self.object = form.save(commit=False)
-        self.object.sender_id = self.request.user.id
-        self.object.save()
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        message_form = MessageForm(self.request.GET or None)
+        context = self.get_context_data(**kwargs)
+        context['message_form'] = message_form
+        return self.render_to_response(context)
 
 class PrivateMessageList(generic.ListView):
     model = models.PrivateMessage
