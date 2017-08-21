@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+
+{% block javascript %}
+
+{% endblock %}
+
 {% block content %}
   <h2>
     title: {{question.title}}
@@ -15,6 +20,7 @@
           <span class="text-danger icon-label">Delete</span>
         </a>
     {% endif %}
+  <h4>comments</h4>
     {% for comment in question_comments %}
       <p>{{comment.text}}</p>
       {% if user.is_authenticated and comment.user.username == request.user.username %}
@@ -24,11 +30,11 @@
           </a>
       {% endif %}
     {% endfor %}
-    <div class="container">
+    <div class="form-group form-group-sm">
       <form action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
           {% csrf_token %}
-          {{question_comment_form.as_p}}
-          <input type="submit" value="Comment on Question" class="btn btn-default">
+          {% bootstrap_form question_comment_form %}
+          <input type="submit" value="Comment on Question" id="question_comment" class="btn btn-default">
       </form>
     </div>
   </p>
@@ -43,6 +49,7 @@
   {% for answer in question.answers.all %}
     {% include "answers/_answer.html" with answer=answer %}
   {% endfor %}
+  <h1>Create an Answer</h1>
   <div class="container">
       <form method="post">
           {% csrf_token %}
