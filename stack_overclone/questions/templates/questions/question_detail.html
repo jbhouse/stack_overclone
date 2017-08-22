@@ -3,15 +3,21 @@
 
 {% block javascript %}
   <script>
+
+    $('#answer-creation-form').on('submit', function(e){
+      e.preventDefault();
+      create_question_answer();
+    });
+
     $('#question_comment_form').on('submit', function(e){
       var that = $(this)
       e.preventDefault();
       create_question_comment();
     });
+
     $('.question-comment-list').on("click", "a", function(e){
       var that = $(this)
       e.preventDefault();
-      console.log(that.attr('id'))
       delete_question_comment();
 
       function delete_question_comment() {
@@ -24,7 +30,7 @@
           }
         })
       }
-    })
+    });
 
     function create_question_comment() {
       $.ajax({
@@ -37,6 +43,19 @@
         }
       })
     };
+
+    function create_question_answer() {
+      $.ajax({
+        url : '{% url 'answers:create' pk=question.pk %}',
+        type : "POST",
+        data : {the_data : $('#answer').val()},
+        success : function(json) {
+          $('#answer').val('');
+          $('.answers-list').append("<p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"+"</p>")
+        }
+      })
+    };
+
   </script>
 {% endblock %}
 
@@ -75,7 +94,7 @@
       <form id="question_comment_form" action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
           {% csrf_token %}
           {% bootstrap_form question_comment_form %}
-          <input type="submit" value="Comment on Question" id="question_comment" class="btn btn-default">
+          <input type="submit" value="Comment on Question" id="question-comment" class="btn btn-default">
       </form>
     </div>
   </p>
@@ -84,15 +103,17 @@
     <a href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
     <a href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
   </p>
-  <h3>
-    Answers
-  </h3>
-  {% for answer in question.answers.all %}
-    {% include "answers/_answer.html" with answer=answer %}
-  {% endfor %}
+  <div class="container answers-list">
+    <h3>
+      Answers
+    </h3>
+    {% for answer in question.answers.all %}
+      {% include "answers/_answer.html" with answer=answer %}
+    {% endfor %}
+  </div>
   <h1>Create an Answer</h1>
   <div class="container">
-      <form method="post">
+      <form id="answer-creation-form" method="post">
           {% csrf_token %}
           {% bootstrap_form answer_form %}
           <input type="submit" value="Post Answer" class="btn btn-default">
