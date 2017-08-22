@@ -8,6 +8,24 @@
       e.preventDefault();
       create_question_comment();
     });
+    $('.question-comment-list').on("click", "a", function(e){
+      var that = $(this)
+      e.preventDefault();
+      console.log(that.attr('id'))
+      delete_question_comment();
+
+      function delete_question_comment() {
+        $.ajax({
+          url : that.attr('href'),
+          type : "DELETE",
+          data : { pk: that.attr('id') },
+          success: function() {
+            that.parent().detach()
+          }
+        })
+      }
+    })
+
     function create_question_comment() {
       $.ajax({
         url : '{% url 'comments:create_question_comment' pk=question.pk %}',
@@ -15,7 +33,7 @@
         data : {the_data : $('#question-comment').val()},
         success : function(json) {
           $('#question-comment').val('');
-          $('.question-comment-list').children().last().append("<li><p>"+json['text']+"</p>"+"<a href='/questions/view/"+json['pk']+"' title='delete' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
+          $('.question-comment-list').children().last().append("<li><p>"+json['text']+"</p>"+"<a href='/comments/question/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
         }
       })
     };
@@ -44,7 +62,7 @@
     <li>
       <p>{{comment.text}}</p>
       {% if user.is_authenticated and comment.user.username == request.user.username %}
-          <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" class="btn btn-simple">
+          <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
             <span class="glyphicon glyphicon-remove text-danger"></span>
             <span class="text-danger icon-label">Delete</span>
           </a>
