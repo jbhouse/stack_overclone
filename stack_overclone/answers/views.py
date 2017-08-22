@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from . import forms
+from django.http import JsonResponse
 from answers.forms import AnswerForm
 from django.views import generic
 from answers.models import Answer
@@ -84,3 +85,21 @@ def DownVoteAnswer(request, **kwargs):
     answer.votes -= 1
     answer.save()
     return redirect('questions:detail', pk=answer.question.pk)
+
+
+def CreateQuestionAnswer(request, **kwargs):
+    if request.method == "POST":
+        response_data = {}
+        if request.user.is_authenticated():
+            user = request.user
+        question = get_object_or_404(Question, pk=kwargs['pk'])
+        answer_text = request.POST.get('the_data')
+        new_question_answer = Answer.objects.create_answer(user, question)
+        new_question_answer.text = answer_text
+        new_question_answer.save()
+        # response_data['created'] = new_question_answer.created_at
+        response_data['user_id'] = user.pk
+        response_data['user'] = user.username
+        response_data['text'] = new_question_answer.text
+        response_data['pk'] = new_question_answer.pk
+    return JsonResponse(response_data)
