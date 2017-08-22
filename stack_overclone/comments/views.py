@@ -46,6 +46,7 @@ def CreateQuestionComment(request, **kwargs):
         new_question_comment.text = comment_text
         new_question_comment.save()
         response_data['text'] = new_question_comment.text
+        response_data['pk'] = kwargs['pk']
         print('-'*50)
         print(response_data)
         print('-'*50)
