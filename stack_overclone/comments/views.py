@@ -18,12 +18,6 @@ def DeleteAnswerComment(request, **kwargs):
     answer_comment.delete()
     return redirect('questions:detail', redirect_pk)
 
-def DeleteQuestionComment(request, **kwargs):
-    question_comment = get_object_or_404(QuestionComment, pk=kwargs['pk'])
-    redirect_pk = question_comment.question.pk
-    question_comment.delete()
-    return redirect('questions:detail', redirect_pk)
-
 def CreateAnswerComment(request, **kwargs):
     if request.method == "POST":
         answer = get_object_or_404(Answer, pk=kwargs['pk'])
@@ -35,7 +29,16 @@ def CreateAnswerComment(request, **kwargs):
             answercomment.save()
     return redirect('questions:detail', answer.question.pk)
 
+def DeleteQuestionComment(request, **kwargs):
+    response_data = {}
+    question_comment = get_object_or_404(QuestionComment, pk=kwargs['pk'])
+    # redirect_pk = question_comment.question.pk
+    question_comment.delete()
+    # return redirect('questions:detail', redirect_pk)
+    return JsonResponse(response_data)
+
 def CreateQuestionComment(request, **kwargs):
+    # HttpRequest.is_ajax()
     if request.method == "POST":
         response_data = {}
         if request.user.is_authenticated():
@@ -46,10 +49,7 @@ def CreateQuestionComment(request, **kwargs):
         new_question_comment.text = comment_text
         new_question_comment.save()
         response_data['text'] = new_question_comment.text
-        response_data['pk'] = kwargs['pk']
-        print('-'*50)
-        print(response_data)
-        print('-'*50)
+        response_data['pk'] = new_question_comment.pk
         # question_comment = QuestionCommentForm(request.POST)
         # if question_comment.is_valid():
         #     questioncomment = question_comment.save(commit=False)
