@@ -15,10 +15,7 @@
         data : {the_data : $('#question-comment').val()},
         success : function(json) {
           $('#question-comment').val('');
-          console.log(json['text'])
-          console.log("it worked")
-          $('.question-comment-list').children().last().append("<li><p>"+json['text']+"</p>"+"<a href='/questions/view/133'"+" title='delete' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"
-          )
+          $('.question-comment-list').children().last().append("<li><p>"+json['text']+"</p>"+"<a href='/questions/view/"+json['pk']+"' title='delete' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
         }
       })
     };
@@ -42,8 +39,8 @@
     {% endif %}
 <div>
   <h4>comments</h4>
-  {% for comment in question_comments %}
   <ul class="question-comment-list">
+    {% for comment in question_comments %}
     <li>
       <p>{{comment.text}}</p>
       {% if user.is_authenticated and comment.user.username == request.user.username %}
@@ -53,8 +50,8 @@
           </a>
       {% endif %}
     </li>
+    {% endfor %}
   </ul>
-  {% endfor %}
 </div>
     <div class="form-group form-group-sm">
       <form id="question_comment_form" action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
