@@ -13,15 +13,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
 @login_required
 def DeleteAnswer(request, **kwargs):
+    response_data = {}
     answer = get_object_or_404(Answer, pk=kwargs['pk'])
-    redirect_pk = answer.question.pk
+    # redirect_pk = answer.question.pk
     answer.delete()
-    return redirect('questions:detail', pk=redirect_pk)
+    # return redirect('questions:detail', pk=redirect_pk)
+    return JsonResponse(response_data)
 
 class UserAnswers(generic.ListView):
     model = Answer
