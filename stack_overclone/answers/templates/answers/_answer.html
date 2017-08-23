@@ -14,6 +14,9 @@
     <a href="{% url 'answers:upvote' pk=answer.pk %}">Upvote</a>
     <a href="{% url 'answers:downvote' pk=answer.pk %}">Downvote</a>
   </p>
+  <div class='answer-comment-section'>
+    
+  </div>
   {% for ac in answer.answer_comment.all %}
     <p>{{ac.text}}</p>
     {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
@@ -24,7 +27,7 @@
     {% endif %}
   {% endfor %}
   <div class='answer-comment container'>
-    <form action={% url 'comments:create_answer_comment' pk=answer.pk %} method='post'>
+    <form action={% url 'comments:create_answer_comment' pk=answer.pk %} id={{answer.pk}} method='post'>
         {% csrf_token %}
         {{answer_comment_form.as_p}}
         <input type='submit' value='Comment on Answer' class='btn btn-default'>
