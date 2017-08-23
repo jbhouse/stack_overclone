@@ -3,7 +3,7 @@
   <p>
     answered by: <a href="{% url 'accounts:detail' pk=answer.user.id %}">{{answer.user.username}}</a> on: {{answer.created_at}}
     {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-        <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" id={{answer.id}} class="btn btn-simple">
+        <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" id="delete-answer-{{answer.id}}" class="btn btn-simple">
           <span class="glyphicon glyphicon-remove text-danger"></span>
           <span class="text-danger icon-label">Delete</span>
         </a>
@@ -18,7 +18,7 @@
     {% for ac in answer.answer_comment.all %}
       <p>{{ac.text}}</p>
       {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-          <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id={{ac.pk}} title="delete" class="answer-delete-button btn btn-simple">
+          <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
             <span class="glyphicon glyphicon-remove text-danger"></span>
             <span class="text-danger icon-label">Delete</span>
           </a>
