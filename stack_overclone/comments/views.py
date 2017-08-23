@@ -20,14 +20,17 @@ def DeleteAnswerComment(request, **kwargs):
 
 def CreateAnswerComment(request, **kwargs):
     if request.method == "POST":
+        response_data = {}
+        if request.user.is_authenticated():
+            user = request.user
         answer = get_object_or_404(Answer, pk=kwargs['pk'])
-        answer_comment = AnswerCommentForm(request.POST)
-        if answer_comment.is_valid():
-            answercomment = answer_comment.save(commit=False)
-            answercomment.answer = answer
-            answercomment.user_id = request.user.id
-            answercomment.save()
-    return redirect('questions:detail', answer.question.pk)
+        comment_text = request.POST.get('text')
+        new_answer_comment = AnswerComment.objects.create_answer_comment(user, answer)
+        new_answer_comment.text = comment_text
+        new_answer_comment.save()
+        response_data['text'] = new_answer_comment.text
+        response_data['pk'] = new_answer_comment.pk
+    return JsonResponse(response_data)
 
 def DeleteQuestionComment(request, **kwargs):
     response_data = {}
