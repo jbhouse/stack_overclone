@@ -14,7 +14,7 @@
     <a href="{% url 'answers:upvote' pk=answer.pk %}">Upvote</a>
     <a href="{% url 'answers:downvote' pk=answer.pk %}">Downvote</a>
   </p>
-  <div class='answer-comment-section'>
+  <div id='answer-comments-{{answer.pk}}' class='answer-comment-section'>
     {% for ac in answer.answer_comment.all %}
       <p>{{ac.text}}</p>
       {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}

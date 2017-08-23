@@ -32,6 +32,7 @@ def CreateAnswerComment(request, **kwargs):
         new_answer_comment.save()
         response_data['text'] = new_answer_comment.text
         response_data['pk'] = new_answer_comment.pk
+        response_data['answer_pk'] = answer.pk
     return JsonResponse(response_data)
 
 def DeleteQuestionComment(request, **kwargs):
