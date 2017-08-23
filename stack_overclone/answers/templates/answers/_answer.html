@@ -23,11 +23,11 @@
         </a>
     {% endif %}
   {% endfor %}
-  <div class="container">
-    <form action={% url 'comments:create_answer_comment' pk=answer.pk %} method="post">
+  <div class='answer-comment container'>
+    <form action={% url 'comments:create_answer_comment' pk=answer.pk %} method='post'>
         {% csrf_token %}
         {{answer_comment_form.as_p}}
-        <input type="submit" value="Comment on Answer" class="btn btn-default">
+        <input type='submit' value='Comment on Answer' class='btn btn-default'>
     </form>
   </div>
 </div>
