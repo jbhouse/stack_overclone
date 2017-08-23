@@ -20,6 +20,7 @@ User = get_user_model()
 @login_required
 def DeleteAnswer(request, **kwargs):
     response_data = {}
+    response_data['pk'] = kwargs['pk']
     answer = get_object_or_404(Answer, pk=kwargs['pk'])
     # redirect_pk = answer.question.pk
     answer.delete()

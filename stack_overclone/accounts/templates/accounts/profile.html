@@ -1,14 +1,59 @@
 {% extends "base.html" %}
+
+{% block javascript %}
+  <script>
+  $('.questions').on('click',"a",function(e){
+    e.preventDefault();
+    var that = $(this)
+    deleteUserQuestion();
+    function deleteUserQuestion() {
+      $.ajax({
+        url : that.attr('href'),
+        type : "DELETE",
+        data : { pk: that.attr('href').slice(18,-1) },
+        success : function(json) {
+          $('#question-'+json['pk']).detach();
+        }
+      })
+    }
+  })
+
+  $('.answers').on('click',"a",function(e){
+    e.preventDefault();
+    var that = $(this)
+    deleteUserAnswer();
+    function deleteUserAnswer() {
+      $.ajax({
+        url : that.attr('href'),
+        type : "DELETE",
+        data : { pk: that.attr('href').slice(16,-1) },
+        success : function(json) {
+          $('#answer-'+json['pk']).detach();
+        }
+      })
+    }
+  })
+  </script>
+{% endblock %}
+
 {% block content %}
 <h1>{{user.username}}'s profile</h1>
 
-<h1>Questions</h1>
-{% for question in user_questions %}
-  {% include "questions/_question.html" with question=question %}
-{% endfor %}
+<div class="questions">
+  <h1>Questions</h1>
+  {% for question in user_questions %}
+    <div id="question-{{question.id}}">
+      {% include "questions/_question.html" with question=question %}
+    </div>
+  {% endfor %}
+</div>
 
-<h1>Answers</h1>
-{% for answer in user_answers %}
-  {% include "answers/_user_answer.html" with answer=answer %}
-{% endfor %}
+<div class="answers">
+  <h1>Answers</h1>
+  {% for answer in user_answers %}
+    <div id="answer-{{answer.id}}">
+      {% include "answers/_user_answer.html" with answer=answer %}
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}
