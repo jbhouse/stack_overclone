@@ -17,8 +17,6 @@
     $('.answers-list').on('click', "a", function(e){
       e.preventDefault();
       var that = $(this)
-      console.log(that.attr('id'))
-      console.log(that.attr('href'))
       delete_answer();
 
       function delete_answer() {
@@ -69,7 +67,7 @@
         data : {the_data : $('#answer').val()},
         success : function(json) {
           $('#answer').val('');
-          $('.answers-list').append("<p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"+"</p>")
+          $('.answers-list').append("<p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"+"</p>"+"<div class='answer-comment form-group'>"+"<form action='/comments/answer/delete/"+json['pk']+" ' method='post'>"+"<input class='form-control' placeholder='comment' type='text' name='answer_comment'>"+"<input type='submit' value='Comment on Answer' class='btn btn-default'>"+"</form></div>")
         }
       })
     };
