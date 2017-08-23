@@ -13,10 +13,12 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 # Create your views here.
 def DeleteAnswerComment(request, **kwargs):
+    response_data = {}
     answer_comment = get_object_or_404(AnswerComment, pk=kwargs['pk'])
-    redirect_pk = answer_comment.answer.question.pk
+    # redirect_pk = answer_comment.answer.question.pk
     answer_comment.delete()
-    return redirect('questions:detail', redirect_pk)
+    # return redirect('questions:detail', redirect_pk)
+    return JsonResponse(response_data)
 
 def CreateAnswerComment(request, **kwargs):
     if request.method == "POST":
