@@ -14,12 +14,6 @@
       create_question_comment();
     });
 
-    // $('.answer-comment-section').on('click', 'a', function(e){
-    //   e.preventDefault();
-    //   var that = $(this)
-    //   console.log(that)
-    // })
-
     $('.answers-list').on('submit', "form", function(e){
       e.preventDefault();
       var that = $(this)
@@ -37,16 +31,19 @@
           }
         })
       }
-
     })
 
     $('.answers-list').on('click', "a", function(e){
       e.preventDefault();
       var that = $(this)
       var id_len = that.attr('id').length
-      // console.log(that.attr('id').slice(14, id_len))
-      delete_answer();
-
+      if (that.attr('id').slice(0,10) == 'delete-com') {
+        delete_comment();
+      } else {
+        if (that.attr('id').slice(0,10) == 'delete-ans'){
+          delete_answer();
+        }
+      }
       function delete_answer() {
         $.ajax({
           url : that.attr('href'),
@@ -54,6 +51,17 @@
           data : { pk: that.attr('id').slice(14, id_len) },
           success: function() {
             that.parent().parent().detach()
+          }
+        })
+      }
+      function delete_comment() {
+        $.ajax({
+          url : that.attr('href'),
+          type : "DELETE",
+          data : { pk: that.attr('id').slice(14, id_len) },
+          success: function() {
+            that.prev().detach()
+            that.detach()
           }
         })
       }
