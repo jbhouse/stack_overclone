@@ -33,9 +33,7 @@
           data : { pk: that.attr('id'), text: answer_comment_text },
           success: function(json) {
             that.children().last().prev().children().last().val('');
-            // console.log($("#answer-comments-"+json['answer_pk']));
-            // var relevantComment = "'#answer-comments-"+json['answer_pk']+"'"
-            $("#answer-comments-"+json['answer_pk']).append("<p>"+json['text']+"</p>"+"<a href='/comments/answer/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='answer-delete-button btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
+            $("#answer-comments-"+json['answer_pk']).append("<p>"+json['text']+"</p>"+"<a href='/comments/answer/delete/"+json['pk']+"' title='delete' id='delete-comment-"+json['pk']+"' class='answer-delete-button btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
           }
         })
       }
@@ -45,13 +43,15 @@
     $('.answers-list').on('click', "a", function(e){
       e.preventDefault();
       var that = $(this)
+      var id_len = that.attr('id').length
+      // console.log(that.attr('id').slice(14, id_len))
       delete_answer();
 
       function delete_answer() {
         $.ajax({
           url : that.attr('href'),
           type : "DELETE",
-          data : { pk: that.attr('id') },
+          data : { pk: that.attr('id').slice(14, id_len) },
           success: function() {
             that.parent().parent().detach()
           }
@@ -95,7 +95,7 @@
         data : {the_data : $('#answer').val()},
         success : function(json) {
           $('#answer').val('');
-          $('.answers-list').append("<div class='answer-instance'><p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"+"</p>"+"<div class='answer-comment-section' id='answer-comments-"+json['pk']+"'></div><div class='answer-comment form-group'>"+"<form action='/comments/answer/create/"+json['pk']+"/' method='post' id='"+json['pk']+"'>"+"<p><input id='answer-comment' class='form-control' placeholder='comment' type='text' name='answer_comment'></p>"+"<input type='submit' value='Comment on Answer' class='answer-on-comment btn btn-default'>"+"</form></div></div>")
+          $('.answers-list').append("<div class='answer-instance'><p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='delete-answer-"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"+"</p>"+"<div class='answer-comment-section' id='answer-comments-"+json['pk']+"'></div><div class='answer-comment form-group'>"+"<form action='/comments/answer/create/"+json['pk']+"/' method='post' id='"+json['pk']+"'>"+"<p><input id='answer-comment' class='form-control' placeholder='comment' type='text' name='answer_comment'></p>"+"<input type='submit' value='Comment on Answer' class='answer-on-comment btn btn-default'>"+"</form></div></div>")
         }
       })
     };
