@@ -21,7 +21,7 @@ from braces.views import SelectRelatedMixin
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404,JsonResponse
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -67,6 +67,10 @@ class QuestionList(generic.ListView):
 def DeleteQuestion(request, **kwargs):
     question = get_object_or_404(Question, pk=kwargs['pk'])
     question.delete()
+    if request.is_ajax():
+        response_data = {}
+        response_data['pk'] = kwargs['pk']
+        return JsonResponse(response_data)
     return redirect('questions:list')
 
 class UserQuestions(generic.ListView):
