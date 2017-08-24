@@ -15,6 +15,10 @@ class Question(models.Model):
     def __str__(self):
         return self.title
 
+    def answer_count(self):
+        question = Question.objects.prefetch_related('answers').get(id=self.pk)
+        return question.answers.all().count()
+
     def get_absolute_url(self):
         return reverse("questions:detail", pk=self.pk)
 
