@@ -12,7 +12,7 @@ done(all core functionality)-
 
 done- Responsiveness (javascript and ajax)
 
-  Styling (html and css),
+In progress-  Styling (html and css),
   Reformat (make it RESTful)
   
 Stretch Goals-
