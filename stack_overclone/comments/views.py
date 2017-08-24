@@ -17,6 +17,7 @@ def DeleteAnswerComment(request, **kwargs):
     answer_comment = get_object_or_404(AnswerComment, pk=kwargs['pk'])
     # redirect_pk = answer_comment.answer.question.pk
     answer_comment.delete()
+    response_data['pk'] = kwargs['pk']
     # return redirect('questions:detail', redirect_pk)
     return JsonResponse(response_data)
 
@@ -38,6 +39,7 @@ def CreateAnswerComment(request, **kwargs):
 def DeleteQuestionComment(request, **kwargs):
     response_data = {}
     question_comment = get_object_or_404(QuestionComment, pk=kwargs['pk'])
+    response_data['pk'] = kwargs['pk']
     # redirect_pk = question_comment.question.pk
     question_comment.delete()
     # return redirect('questions:detail', redirect_pk)

@@ -9,20 +9,25 @@
         </a>
     {% endif %}
   </p>
-  <p>vote total: {{answer.votes}}</p>
   <p>
+    vote total: {{answer.votes}}
+    {% if user.is_authenticated and answer.user.username != request.user.username and not hide_delete %}
     <a href="{% url 'answers:upvote' pk=answer.pk %}">Upvote</a>
     <a href="{% url 'answers:downvote' pk=answer.pk %}">Downvote</a>
+    {% endif %}
   </p>
+  <p>comments</p>
   <div id='answer-comments-{{answer.pk}}' class='answer-comment-section'>
     {% for ac in answer.answer_comment.all %}
-      <p>{{ac.text}}</p>
-      {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-          <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
-            <span class="glyphicon glyphicon-remove text-danger"></span>
-            <span class="text-danger icon-label">Delete</span>
-          </a>
-      {% endif %}
+      <p>
+        {{ac.text}}
+        {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
+            <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
+              <span class="glyphicon glyphicon-remove text-danger"></span>
+              <span class="text-danger icon-label">Delete</span>
+            </a>
+        {% endif %}
+      </p>
     {% endfor %}
   </div>
   <div class='answer-comment container'>
