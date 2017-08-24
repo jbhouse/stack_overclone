@@ -8,6 +8,23 @@
       $('#new-message-div').removeClass('hidden');
       $('#new-message-button').hide();
     })
+
+    $('.inbox-messages').on('click','a',function(e){
+      e.preventDefault();
+      that = $(this)
+      delete_message();
+
+      function delete_message(){
+        $.ajax({
+          url  : that.attr('href'),
+          type : "DELETE",
+          success : function(json) {
+            that.parent().parent().detach()
+          }
+        })
+      }
+    })
+
     $('#new-message-div').on('submit','form',function(e){
       e.preventDefault();
       that = $(this)
