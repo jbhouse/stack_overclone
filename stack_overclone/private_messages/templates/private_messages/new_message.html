@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block content %}
-  <h1>New Message</h1>
-  <form method="post">
-    {% csrf_token %}
-    {% bootstrap_form message_form %}
-    <input type="submit" class="btn btn-primary" value="Send Message">
-  </form>
-
-  <form action="{% url 'private_messages:filter' %}" method="post">
-   {% csrf_token %}
-   {% bootstrap_form user_filter_form %}
-   <input type="submit" class="btn btn-primary" value="Filter Users">
-  </form>
-{% endblock %}
+  <div class='new-message-form'>
+    <h1>New Message</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% bootstrap_form message_form %}
+      <input type='submit' class='btn btn-primary' value='Send Message'>
+    </form>
+  </div>
+  {% endblock %}

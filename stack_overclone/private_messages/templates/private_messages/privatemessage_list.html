@@ -1,12 +1,61 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block javascript %}
+  <script>
+    $('#new-message-button').on('click',function(e){
+      $('#new-message-div').removeClass('hidden');
+      $('#new-message-button').hide();
+    })
+    $('#new-message-div').on('submit','form',function(e){
+      e.preventDefault();
+      that = $(this)
+      sendMessage();
+
+      function sendMessage(){
+        $.ajax({
+          url  : '{% url 'private_messages:new_message' %}',
+          type : "POST",
+          data : { recipient: $('#id_recipient').val(), subject: $('#id_subject').val(), message: $('#id_message').val() },
+          success : function(json) {
+            $('#new-message-div').hide();
+            $('#new-message-button').show();
+            if (json.recipient_id == json.sender_id) {
+              $('.inbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
+              $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
+            } else {
+              $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
+            }
+          }
+        })
+      }
+    })
+  </script>
+{% endblock %}
+
 {% block content %}
-  <h1>Inbox</h1>
-  <p><a href="{% url 'private_messages:new_message' %}">New Message</a></p>
-  {% for message in users_inbox  %}
-  {% include "private_messages/_message.html" %}
-  {% endfor %}
+  <div class="new-message">
+    <h1>Inbox</h1>
+    <p><a id="new-message-button" href="#">New Message</a></p>
+    <div id='new-message-div' class='hidden'>
+      <h1>New Message</h1>
+      <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form message_form %}
+        <input type='submit' class='btn btn-primary' value='Send Message'>
+      </form>
+    </div>
+  </div>
+  <div class="inbox-messages">
+    {% for message in users_inbox  %}
+      {% include "private_messages/_message.html" %}
+    {% endfor %}
+  </div>
   <h1>Sent Messages</h1>
-  {% for message in users_outbox  %}
-  {% include "private_messages/_outbox_message.html" %}
-  {% endfor %}
+  <div class="outbox-messages">
+    {% for message in users_outbox  %}
+      {% include "private_messages/_outbox_message.html" %}
+    {% endfor %}
+  </div>
 {% endblock %}

@@ -1,4 +1,8 @@
-<h3 id="subject_line">
-  subject: <a href="{% url 'private_messages:detail' pk=message.pk %}">{{message.subject}}</a>
-</h3>
-<p>sent to: <a href="{% url 'accounts:detail' pk=message.recipient.id %}">{{message.recipient}}</a>,  on: {{message.created_at}}</p>
+<div id="outbox-message-{{message.pk}}">
+  <h3 id="subject_line">
+    subject: <a href="{% url 'private_messages:detail' pk=message.pk %}">{{message.subject}}</a>
+  </h3>
+  <p>
+    sent to: <a href="{% url 'accounts:detail' pk=message.recipient.id %}">{{message.recipient}}</a>,  on: {{message.created_at}}
+  </p>
+</div>
