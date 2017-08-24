@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'questions/style.css' %}" />
 
 {% block javascript %}
   <script>
@@ -27,7 +29,7 @@
           data : { pk: that.attr('id'), text: answer_comment_text },
           success: function(json) {
             that.children().last().prev().children().last().val('');
-            $("#answer-comments-"+json['answer_pk']).append("<p>"+json['text']+"</p>"+"<a href='/comments/answer/delete/"+json['pk']+"' title='delete' id='delete-comment-"+json['pk']+"' class='answer-delete-button btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
+            $("#answer-comments-"+json['answer_pk']).append("<p id='answer-comment-"+json.pk+"'>"+json['text']+"<a href='/comments/answer/delete/"+json['pk']+"' title='delete' id='delete-comment-"+json['pk']+"' class='answer-delete-button btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span></a></p>")
           }
         })
       }
@@ -59,9 +61,8 @@
           url : that.attr('href'),
           type : "DELETE",
           data : { pk: that.attr('id').slice(14, id_len) },
-          success: function() {
-            that.prev().detach()
-            that.detach()
+          success: function(json) {
+            $('#answer-comment-'+json.pk).detach()
           }
         })
       }
@@ -77,8 +78,8 @@
           url : that.attr('href'),
           type : "DELETE",
           data : { pk: that.attr('id') },
-          success: function() {
-            that.parent().detach()
+          success: function(json) {
+            $('#question-comment-'+json.pk).detach()
           }
         })
       }
@@ -91,7 +92,7 @@
         data : {the_data : $('#question-comment').val()},
         success : function(json) {
           $('#question-comment').val('');
-          $('.question-comment-list').children().last().append("<li><p>"+json['text']+"</p>"+"<a href='/comments/question/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>")
+          $('.question-comment-list').append("<li id='question-comment-"+json['pk']+"'><p>"+json['text']+"<a href='/comments/question/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a></p>")
         }
       })
     };
@@ -103,7 +104,7 @@
         data : {the_data : $('#answer').val()},
         success : function(json) {
           $('#answer').val('');
-          $('.answers-list').append("<div class='answer-instance'><p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='delete-answer-"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a>"+"</p>"+"<div class='answer-comment-section' id='answer-comments-"+json['pk']+"'></div><div class='answer-comment form-group'>"+"<form action='/comments/answer/create/"+json['pk']+"/' method='post' id='"+json['pk']+"'>"+"<p><input id='answer-comment' class='form-control' placeholder='comment' type='text' name='answer_comment'></p>"+"<input type='submit' value='Comment on Answer' class='answer-on-comment btn btn-default'>"+"</form></div></div>")
+          $('.answers-list').append("<div class='answer-instance'><p><strong>"+json['text']+"</strong></p>"+"<p>answered by: "+"<a href='/accounts/profile/"+json['user_id']+"'>"+json['user']+"</a>"+"<a href='/answers/delete/"+json['pk']+"' title='delete' id='delete-answer-"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a><p>comments</p></p>"+"<div class='answer-comment-section' id='answer-comments-"+json['pk']+"'></div><div class='answer-comment form-group'>"+"<form action='/comments/answer/create/"+json['pk']+"/' method='post' id='"+json['pk']+"'>"+"<p><input id='answer-comment' class='form-control' placeholder='comment' type='text' name='answer_comment'></p>"+"<input type='submit' value='Comment on Answer' class='answer-on-comment btn btn-default'>"+"</form></div></div>")
         }
       })
     };
@@ -112,70 +113,74 @@
 {% endblock %}
 
 {% block content %}
-  <h2>
-    title: {{question.title}}
-  </h2>
-  <h3>
-    details: {{question.details}}
-  </h3>
-  <p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
-  <p>
-    {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
-        <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
-          <span class="glyphicon glyphicon-remove text-danger"></span>
-          <span class="text-danger icon-label">Delete</span>
-        </a>
-    {% endif %}
-<div>
-  <h4>comments</h4>
-  <ul class="question-comment-list">
-    {% for comment in question_comments %}
-    <li>
-      <p>{{comment.text}}</p>
-      {% if user.is_authenticated and comment.user.username == request.user.username %}
-          <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
+<div class="container main-container">
+    <h2>
+      title: {{question.title}}
+    </h2>
+    <h3>
+      details: {{question.details}}
+    </h3>
+    <p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
+    <p>
+      {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
+          <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
             <span class="glyphicon glyphicon-remove text-danger"></span>
             <span class="text-danger icon-label">Delete</span>
           </a>
       {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-    <div class="form-group form-group-sm">
-      <form id="question_comment_form" action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
-          {% csrf_token %}
-          {% bootstrap_form question_comment_form %}
-          <input type="submit" value="Comment on Question" id="question-comment" class="btn btn-default">
-      </form>
+  <div>
+    <h4>comments</h4>
+    <ul class="question-comment-list">
+      {% for comment in question_comments %}
+      <li id="question-comment-{{comment.pk}}">
+        <p>
+          {{comment.text}}
+          {% if user.is_authenticated and comment.user.username == request.user.username %}
+              <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
+                <span class="glyphicon glyphicon-remove text-danger"></span>
+                <span class="text-danger icon-label">Delete</span>
+              </a>
+        </p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+      <div class="form-group form-group-sm">
+        <form id="question_comment_form" action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
+            {% csrf_token %}
+            {% bootstrap_form question_comment_form %}
+            <input type="submit" value="Comment on Question" id="question-comment" class="btn btn-default">
+        </form>
+      </div>
+    </p>
+    <p>vote total: {{question.votes}}</p>
+    <p>
+      <a href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
+      <a href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
+    </p>
+    <div class="container answers-list">
+      <h3>
+        Answers
+      </h3>
+      {% for answer in question.answers.all %}
+        {% include "answers/_answer.html" with answer=answer %}
+      {% endfor %}
     </div>
-  </p>
-  <p>vote total: {{question.votes}}</p>
-  <p>
-    <a href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
-    <a href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
-  </p>
-  <div class="container answers-list">
-    <h3>
-      Answers
-    </h3>
-    {% for answer in question.answers.all %}
-      {% include "answers/_answer.html" with answer=answer %}
-    {% endfor %}
-  </div>
-  <h1>Create an Answer</h1>
-  <div class="container">
-      <form id="answer-creation-form" method="post">
-          {% csrf_token %}
-          {% bootstrap_form answer_form %}
-          <input type="submit" value="Post Answer" class="btn btn-default">
-      </form>
-  </div>
-  <h3>Tags</h3>
-  {% if questionstags %}
-    {% for tag in questionstags %}
-      <a href="{% url 'tags:detail' pk=tag.pk %}">{{tag}}</a>
-    {% endfor %}
-  {% endif %}
-{% endblock %}
-<script src="static/js/app.js"></script>
+    <h1>Create an Answer</h1>
+    <div class="container">
+        <form id="answer-creation-form" method="post">
+            {% csrf_token %}
+            {% bootstrap_form answer_form %}
+            <input type="submit" value="Post Answer" class="btn btn-default">
+        </form>
+    </div>
+    <h3>Tags</h3>
+    {% if questionstags %}
+      {% for tag in questionstags %}
+        <a href="{% url 'tags:detail' pk=tag.pk %}">{{tag}}</a>
+      {% endfor %}
+    {% endif %}
+  {% endblock %}
+  <script src="static/js/app.js"></script>
+</div>

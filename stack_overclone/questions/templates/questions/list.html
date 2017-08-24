@@ -1,22 +1,24 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 
 {% block javascript %}
   <script>
     $('.main-question-list').on('click','a',function(e){
-      e.preventDefault();
       var that = $(this)
-      var question_pk = that.attr('href').slice(18,-1)
-      console.log(question_pk)
-      deleteQuestion();
+      if (that.attr('href').slice(0,15) == '/questions/dele') {
+        e.preventDefault();
+        var question_pk = that.attr('href').slice(18,-1)
+        deleteQuestion();
 
-      function deleteQuestion() {
-        $.ajax({
-          url  : that.attr('href'),
-          type : "DELETE",
-          success : function(json) {
-            $('#question-'+json.pk).detach()
-          }
-        })
+        function deleteQuestion() {
+          $.ajax({
+            url  : that.attr('href'),
+            type : "DELETE",
+            success : function(json) {
+              $('#question-'+json.pk).detach()
+            }
+          })
+        }
       }
     })
   </script>
