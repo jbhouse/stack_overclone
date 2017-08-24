@@ -5,6 +5,37 @@
 
 {% block javascript %}
   <script>
+
+    $('#question-votes').on('click','a',function(e){
+      var that = $(this)
+      e.preventDefault();
+      if (that.attr('id').slice(0,15) == 'question-upvote') {
+        upvoteQuestion();
+      } else {
+        downvoteQuestion();
+      }
+      function upvoteQuestion() {
+        $.ajax({
+          url  : that.attr('href'),
+          type : "POST",
+          success : function(json) {
+            var endLength = $('#vote-total-'+json.pk).text().length
+            $('#vote-total-'+json.pk).text('vote total: '+(parseInt($('#vote-total-'+json.pk).text().slice(12,endLength))+json.count))
+          }
+        })
+      }
+      function downvoteQuestion() {
+        $.ajax({
+          url  : that.attr('href'),
+          type : "POST",
+          success : function(json) {
+            var endLength = $('#vote-total-'+json.pk).text().length
+            $('#vote-total-'+json.pk).text('vote total: '+(parseInt($('#vote-total-'+json.pk).text().slice(12,endLength))-json.count))
+          }
+        })
+      }
+    })
+
     $('#answer-creation-form').on('submit', function(e){
       e.preventDefault();
       create_question_answer();
@@ -154,10 +185,10 @@
         </form>
       </div>
     </p>
-    <p>vote total: {{question.votes}}</p>
-    <p>
-      <a href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
-      <a href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
+    <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
+    <p id='question-votes'>
+      <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
+      <a id='question-downvote-{{question.pk}}' href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
     </p>
     <div class="container answers-list">
       <h3>

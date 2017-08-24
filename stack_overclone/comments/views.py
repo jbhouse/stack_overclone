@@ -46,7 +46,6 @@ def DeleteQuestionComment(request, **kwargs):
     return JsonResponse(response_data)
 
 def CreateQuestionComment(request, **kwargs):
-    # HttpRequest.is_ajax()
     if request.method == "POST":
         response_data = {}
         if request.user.is_authenticated():
