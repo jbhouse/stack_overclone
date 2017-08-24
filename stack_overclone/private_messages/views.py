@@ -67,15 +67,20 @@ class PrivateMessageDetail(SelectRelatedMixin,generic.DetailView):
         queryset = super().get_queryset()
         return queryset.filter(recipient = self.request.user)
 
-class DeletePrivateMessage(LoginRequiredMixin,SelectRelatedMixin,generic.DeleteView):
-    model = PrivateMessage
-    select_related = ('sender','recipient')
-    success_url = reverse_lazy('private_messages:list')
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(recipient = self.request.user)
-
-    def delete(self,*args,**kwargs):
-        messages.success(self.request,'Message Deleted')
-        return super().delete(*args,**kwargs)
+# class DeletePrivateMessage(LoginRequiredMixin,SelectRelatedMixin,generic.DeleteView):
+#     model = PrivateMessage
+#     select_related = ('sender','recipient')
+#     success_url = reverse_lazy('private_messages:list')
+#
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         return queryset.filter(recipient = self.request.user)
+#
+#     def delete(self,*args,**kwargs):
+#         messages.success(self.request,'Message Deleted')
+#         return super().delete(*args,**kwargs)
+def DeletePrivateMessage(request, **kwargs):
+    response_data = {}
+    private_message = get_object_or_404(PrivateMessage, pk=kwargs['pk'])
+    private_message.delete()
+    return JsonResponse(response_data)

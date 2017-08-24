@@ -7,5 +7,5 @@ urlpatterns = [
     url(r'^$',views.PrivateMessageList.as_view(),name='list'),
     url(r'^new/$',views.CreatePrivateMessage,name='new_message'),
     url(r'^details/(?P<pk>\d+)/$',views.PrivateMessageDetail.as_view(),name='detail'),
-    url(r'^delete/(?P<pk>\d+)/$',views.DeletePrivateMessage.as_view(),name='delete'),
+    url(r'^delete/(?P<pk>\d+)/$',views.DeletePrivateMessage,name='delete'),
 ]
