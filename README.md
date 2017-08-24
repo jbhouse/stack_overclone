@@ -10,8 +10,9 @@ done(all core functionality)-
   Votes,
   Comments,
 
+done- Responsiveness (javascript and ajax)
+
   Styling (html and css),
-  Responsiveness (javascript and ajax),
   Reformat (make it RESTful)
   
 Stretch Goals-
