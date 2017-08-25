@@ -169,7 +169,7 @@
             <span class="text-danger icon-label">Delete</span>
           </a>
       {% endif %}
-  <div>
+  <div id="question-comment-div">
     <h4>comments</h4>
     <ul id="qc-list" class="question-comment-list">
       {% for comment in question_comments %}
@@ -186,11 +186,20 @@
       </li>
       {% endfor %}
     </ul>
-    <p><a id="load-more-comments" href="#">Load More Comments</a></p>
   </div>
   <script>
     var question_comment_list = document.getElementById("qc-list");
     var question_comments = question_comment_list.getElementsByTagName("li");
+    // console.log(question_comments.length)
+    if (question_comments.length > 2) {
+      var parent = document.getElementById('question-comment-div');
+      var newParagraph = document.createElement("p");
+      var loadComments = document.createElement("a");
+      loadComments.href = '#'
+      loadComments.id = 'load-more-comments'
+      loadComments.innerHTML = "Load More Comments"
+      parent.appendChild(newParagraph).appendChild(loadComments);
+    }
     for(var i = 0; i < question_comments.length; i++) {
       if (i < 2){
         question_comments[i].classList.remove('hidden')
