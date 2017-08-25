@@ -3,9 +3,11 @@
 {% block javascript %}
   <script>
   $('.questions').on('click',"a",function(e){
-    e.preventDefault();
-    var that = $(this)
-    deleteUserQuestion();
+    if ($(this).attr('title') == 'delete') {
+      var that = $(this)
+      e.preventDefault();
+      deleteUserQuestion();
+    }
     function deleteUserQuestion() {
       $.ajax({
         url : that.attr('href'),
@@ -19,9 +21,11 @@
   })
 
   $('.answers').on('click',"a",function(e){
-    e.preventDefault();
-    var that = $(this)
-    deleteUserAnswer();
+    if ($(this).attr('title') == 'delete') {
+      var that = $(this)
+      e.preventDefault();
+      deleteUserAnswer();
+    }
     function deleteUserAnswer() {
       $.ajax({
         url : that.attr('href'),
