@@ -5,6 +5,16 @@
 
 {% block javascript %}
   <script>
+    $('#load-more-comments').on('click',function(e){
+      var that = $(this);
+      e.preventDefault();
+      show_question_comments();
+
+      function show_question_comments() {
+        $('#qc-list').find('li.hidden').removeClass('hidden')
+        $('#load-more-comments').detach()
+      }
+    })
 
     $('#question-votes').on('click','a',function(e){
       var that = $(this)
@@ -161,9 +171,9 @@
       {% endif %}
   <div>
     <h4>comments</h4>
-    <ul class="question-comment-list">
+    <ul id="qc-list" class="question-comment-list">
       {% for comment in question_comments %}
-      <li id="question-comment-{{comment.pk}}">
+      <li id="question-comment-{{comment.pk}}" class="hidden">
         <p>
           {{comment.text}}
           {% if user.is_authenticated and comment.user.username == request.user.username %}
@@ -171,12 +181,22 @@
                 <span class="glyphicon glyphicon-remove text-danger"></span>
                 <span class="text-danger icon-label">Delete</span>
               </a>
+          {% endif %}
         </p>
-        {% endif %}
       </li>
       {% endfor %}
     </ul>
+    <p><a id="load-more-comments" href="#">Load More Comments</a></p>
   </div>
+  <script>
+    var question_comment_list = document.getElementById("qc-list");
+    var question_comments = question_comment_list.getElementsByTagName("li");
+    for(var i = 0; i < question_comments.length; i++) {
+      if (i < 2){
+        question_comments[i].classList.remove('hidden')
+      }
+    }
+  </script>
       <div class="form-group form-group-sm">
         <form id="question_comment_form" action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
             {% csrf_token %}
@@ -194,9 +214,9 @@
       <h3>
         Answers
       </h3>
-      {% for answer in question.answers.all %}
-        {% include "answers/_answer.html" with answer=answer %}
-      {% endfor %}
+        {% for answer in question.answers.all %}
+          {% include "answers/_answer.html" with answer=answer %}
+        {% endfor %}
     </div>
     <h1>Create an Answer</h1>
     <div class="container">
