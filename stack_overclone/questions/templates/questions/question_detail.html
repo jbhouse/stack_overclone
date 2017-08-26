@@ -16,7 +16,7 @@
       }
     })
 
-    $('#question-votes').on('click','a',function(e){
+    $('.question-votes').on('click','a',function(e){
       var that = $(this)
       e.preventDefault();
       if (that.attr('id').slice(0,15) == 'question-upvote') {
@@ -154,21 +154,43 @@
 {% endblock %}
 
 {% block content %}
-<div class="container main-container">
-    <h2>
-      title: {{question.title}}
-    </h2>
-    <h3>
-      details: {{question.details}}
-    </h3>
-    <p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
-    <p>
-      {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
-          <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
-            <span class="glyphicon glyphicon-remove text-danger"></span>
-            <span class="text-danger icon-label">Delete</span>
+<h1 class="red">RED</h1>
+<a href="{% static 'questions/style.css' %}">stylesheet</a>
+<div class="container">
+  <div class="row container-fluid">
+    <div class="col-md-1 centered-div">
+      <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
+    </div>
+    <div class="col-md-1 centered-div">
+        <p class='question-votes'>
+          <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">
+            <span class="glyphicon glyphicon-arrow-up"></span>
           </a>
-      {% endif %}
+        </p>
+        <p class='question-votes'>
+          <a id='question-downvote-{{question.pk}}' href="{% url 'questions:downvote' pk=question.pk %}">
+            <span class="glyphicon glyphicon-arrow-down"></span>
+          </a>
+        </p>
+    </div>
+    <div class="col-md-4">
+      <h2>
+        title: {{question.title}}
+      </h2>
+      <h3>
+        details: {{question.details}}
+      </h3>
+      <p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
+      <p>
+        {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
+            <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
+              <span class="glyphicon glyphicon-remove text-danger"></span>
+              <span class="text-danger icon-label">Delete</span>
+            </a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
   <div id="question-comment-div">
     <h4>comments</h4>
     <ul id="qc-list" class="question-comment-list">
@@ -212,11 +234,6 @@
             <input type="submit" value="Comment on Question" id="question-comment" class="btn btn-default">
         </form>
       </div>
-    </p>
-    <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
-    <p id='question-votes'>
-      <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">Upvote</a>
-      <a id='question-downvote-{{question.pk}}' href="{% url 'questions:downvote' pk=question.pk %}">Downvote</a>
     </p>
     <div class="container answers-list">
       <h3>
