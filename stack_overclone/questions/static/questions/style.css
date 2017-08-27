@@ -5,4 +5,25 @@ h1.red {
 .Aligner {
   display: flex;
   align-items: center;
+  margin-left: -12%;
+}
+
+.arrows {
+  margin-left: -4%;
+}
+
+.question-details {
+  margin-left: -3%;
+}
+
+#load-more-comments{
+  font-size: 65%;
+}
+
+#qc-list {
+  margin-top: 1%;
+}
+
+#comment-title {
+  align-self: flex-start;
 }

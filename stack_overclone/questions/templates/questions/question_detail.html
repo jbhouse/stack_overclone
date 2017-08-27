@@ -158,7 +158,7 @@
     <div class="col-md-1">
       <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
     </div>
-    <div class="col-md-1">
+    <div class="arrows col-md-1">
         <p class='question-votes'>
           <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">
             <span class="glyphicon glyphicon-arrow-up"></span>
@@ -170,7 +170,7 @@
           </a>
         </p>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 question-details">
       <h2>
         title: {{question.title}}
       </h2>
@@ -189,33 +189,35 @@
     </div>
   </div>
   <div id="question-comment-div">
-    <h4>comments</h4>
-    <ul id="qc-list" class="question-comment-list">
-      {% for comment in question_comments %}
-      <li id="question-comment-{{comment.pk}}" class="hidden">
-        <p>
-          {{comment.text}}
-          {% if user.is_authenticated and comment.user.username == request.user.username %}
-              <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
-                <span class="glyphicon glyphicon-remove text-danger"></span>
-                <span class="text-danger icon-label">Delete</span>
-              </a>
-          {% endif %}
-        </p>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="row Aligner">
+      <h4 id="comment-title" class="col-md-1">comments</h4>
+      <ul id="qc-list" class="question-comment-list">
+        {% for comment in question_comments %}
+        <li id="question-comment-{{comment.pk}}" class="hidden">
+          <p>
+            {{comment.text}}
+            {% if user.is_authenticated and comment.user.username == request.user.username %}
+                <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
+                  <span class="glyphicon glyphicon-remove text-danger"></span>
+                  <span class="text-danger icon-label">Delete</span>
+                </a>
+            {% endif %}
+          </p>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
   <script>
     var question_comment_list = document.getElementById("qc-list");
     var question_comments = question_comment_list.getElementsByTagName("li");
     if (question_comments.length > 2) {
-      var parent = document.getElementById('question-comment-div');
+      var parent = document.getElementById('comment-title');
       var newParagraph = document.createElement("p");
       var loadComments = document.createElement("a");
       loadComments.href = '#'
       loadComments.id = 'load-more-comments'
-      loadComments.innerHTML = "Load More Comments"
+      loadComments.innerHTML = "Load More"
       parent.appendChild(newParagraph).appendChild(loadComments);
     }
     for(var i = 0; i < question_comments.length; i++) {
