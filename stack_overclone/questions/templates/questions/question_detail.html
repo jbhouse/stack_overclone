@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'questions/style.css' %}" />
 
 {% block javascript %}
   <script>
@@ -149,19 +148,17 @@
         }
       })
     };
-
   </script>
 {% endblock %}
 
 {% block content %}
-<h1 class="red">RED</h1>
-<a href="{% static 'questions/style.css' %}">stylesheet</a>
+<link rel="stylesheet" type="text/css" href="{% static 'questions/style.css' %}" />
 <div class="container">
-  <div class="row container-fluid">
-    <div class="col-md-1 centered-div">
+  <div class="row Aligner">
+    <div class="col-md-1">
       <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
     </div>
-    <div class="col-md-1 centered-div">
+    <div class="col-md-1">
         <p class='question-votes'>
           <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">
             <span class="glyphicon glyphicon-arrow-up"></span>
@@ -257,6 +254,6 @@
         <a href="{% url 'tags:detail' pk=tag.pk %}">{{tag}}</a>
       {% endfor %}
     {% endif %}
+</div>
   {% endblock %}
   <script src="static/js/app.js"></script>
-</div>
