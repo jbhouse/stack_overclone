@@ -19,7 +19,7 @@
   <p>comments</p>
   <div id='answer-comments-{{answer.pk}}' class='answer-comment-section'>
     {% for ac in answer.answer_comment.all %}
-      <p>
+      <p id="answer-comment-{{ac.pk}}">
         {{ac.text}}
         {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
             <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
@@ -30,7 +30,8 @@
       </p>
     {% endfor %}
   </div>
-  <div class='answer-comment container'>
+  <p><button type="button" id="answer-comment-button-{{answer.pk}}" class="btn btn-primary answer-comment-button">Comment</button></p>
+  <div id="answer_comment_div-{{answer.pk}}" class='answer-comment container hidden'>
     <form action={% url 'comments:create_answer_comment' pk=answer.pk %} id={{answer.pk}} method='post'>
         {% csrf_token %}
         {{answer_comment_form.as_p}}

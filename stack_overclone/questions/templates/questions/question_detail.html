@@ -4,6 +4,21 @@
 
 {% block javascript %}
   <script>
+    $(".answer-comment-button").on('click', function(e) {
+      e.preventDefault();
+      var that = $(this)
+      var endChar = that.attr('id').length
+      var answerId = that.attr('id').slice(22,endChar)
+      $(this).addClass('hidden')
+      $("#answer_comment_div-"+answerId).removeClass('hidden')
+    })
+
+    $('#question-comment-button').on('click', function(e) {
+      e.preventDefault();
+      $(this).addClass('hidden')
+      $("#question_comment_div").removeClass('hidden')
+    })
+
     $('#load-more-comments').on('click',function(e){
       var that = $(this);
       e.preventDefault();
@@ -70,6 +85,8 @@
           success: function(json) {
             that.children().last().prev().children().last().val('');
             $("#answer-comments-"+json['answer_pk']).append("<p id='answer-comment-"+json.pk+"'>"+json['text']+"<a href='/comments/answer/delete/"+json['pk']+"' title='delete' id='delete-comment-"+json['pk']+"' class='answer-delete-button btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span></a></p>")
+            $("#answer-comment-button-"+that.attr('id')).removeClass('hidden')
+            $("#answer_comment_div-"+that.attr('id')).addClass('hidden')
           }
         })
       }
@@ -133,6 +150,8 @@
         success : function(json) {
           $('#question-comment').val('');
           $('.question-comment-list').append("<li id='question-comment-"+json['pk']+"'><p>"+json['text']+"<a href='/comments/question/delete/"+json['pk']+"' title='delete' id='"+json['pk']+"' class='btn btn-simple'>"+"<span class='glyphicon glyphicon-remove text-danger'></span>"+" "+"<span class='text-danger icon-label'>Delete</span>"+"</a></p>")
+          $("#question_comment_div").addClass('hidden')
+          $('#question-comment-button').removeClass('hidden')
         }
       })
     };
@@ -226,7 +245,8 @@
       }
     }
   </script>
-      <div class="form-group form-group-sm">
+      <p><button id="question-comment-button" type="button" class="btn btn-primary">Comment</button></p>
+      <div id="question_comment_div" class="form-group form-group-sm hidden">
         <form id="question_comment_form" action={% url 'comments:create_question_comment' pk=question.pk %} method="post">
             {% csrf_token %}
             {% bootstrap_form question_comment_form %}
@@ -235,9 +255,9 @@
       </div>
     </p>
     <div class="container answers-list">
-      <h3>
+      <h2>
         Answers
-      </h3>
+      </h2>
         {% for answer in question.answers.all %}
           {% include "answers/_answer.html" with answer=answer %}
         {% endfor %}
