@@ -1,18 +1,8 @@
-h1.red
-{
-  color: red !important;
+h1.red {
+  color: red;
 }
 
-.container-fluid {
-  height: 100%;
-  padding-left: 0px;
-  padding-right: 0px;
-}
-.centered-div {
-  position: absolute;
-  display:flex;
-  justify-content:center;
-  align-items:center;
- flex-direction:row;/*change to column if not as in expected direction.*/
- height:80px; /*Set height if not specified earlier*/
+.Aligner {
+  display: flex;
+  align-items: center;
 }
