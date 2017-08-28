@@ -4,6 +4,14 @@
 
 {% block javascript %}
   <script>
+    $(".load-more-answer-comments").on('click',function(e) {
+      e.preventDefault();
+      var that = $(this)
+      var acList = that.attr('id').slice(21,that.attr('id').length)
+      $('#ac-list-'+acList).find('li.hidden').removeClass('hidden')
+      $('#load-answer-comments-'+acList).detach()
+    })
+
     $(".answer-votes").on('click','a',function(e) {
       e.preventDefault();
       var that = $(this)
@@ -153,7 +161,7 @@
             type : "DELETE",
             data : { pk: that.attr('id').slice(14, id_len) },
             success: function(json) {
-              $('#answer-comment-'+json.pk).detach()
+              $('#answer-comment-'+json.pk).parent().detach()
             }
           })
         }
@@ -291,6 +299,7 @@
         </form>
       </div>
     </p>
+    <p>==========================================================================</p>
     <div class="container answers-list">
       <h2>
         Answers
