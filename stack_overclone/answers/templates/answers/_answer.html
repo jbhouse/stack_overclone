@@ -1,42 +1,54 @@
 <div class="answer-instance">
-  <p><strong>{{answer.text}}</strong></p>
-  <p>
-    answered by: <a href="{% url 'accounts:detail' pk=answer.user.id %}">{{answer.user.username}}</a> on: {{answer.created_at}}
-    {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-        <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" id="delete-answer-{{answer.id}}" class="btn btn-simple">
-          <span class="glyphicon glyphicon-remove text-danger"></span>
-          <span class="text-danger icon-label">Delete</span>
-        </a>
-    {% endif %}
-  </p>
-  <p id="answer-votes-{{answer.pk}}">vote total: {{answer.votes}}</p>
-  <p class="answer-votes">
-    {% if user.is_authenticated and answer.user.username != request.user.username and not hide_delete %}
-    <a href="{% url 'answers:upvote' pk=answer.pk %}"><span class="glyphicon glyphicon-arrow-up"></span></a>
-    <a href="{% url 'answers:downvote' pk=answer.pk %}"><span class="glyphicon glyphicon-arrow-down"></span></a>
-    {% endif %}
-  </p>
+  <div class="row Aligner">
+    <div class="col-md-1">
+      <p id="answer-votes-{{answer.pk}}">vote total: {{answer.votes}}</p>
+    </div>
+    <div class="arrows col-md-1">
+      {% if user.is_authenticated and answer.user.username != request.user.username and not hide_delete %}
+      <p class="answer-votes">
+        <a href="{% url 'answers:upvote' pk=answer.pk %}"><span class="glyphicon glyphicon-arrow-up"></span></a>
+      </p>
+      <p class="answer-votes">
+        <a href="{% url 'answers:downvote' pk=answer.pk %}"><span class="glyphicon glyphicon-arrow-down"></span></a>
+      </p>
+      {% endif %}
+    </div>
+    <div class="col-md-4 answer-details">
+      <p><strong>{{answer.text}}</strong></p>
+      <p>
+        answered by: <a href="{% url 'accounts:detail' pk=answer.user.id %}">{{answer.user.username}}</a> on: {{answer.created_at}}
+        {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
+            <a href="{% url 'answers:delete' pk=answer.pk %}" title="delete" id="delete-answer-{{answer.id}}" class="btn btn-simple">
+              <span class="glyphicon glyphicon-remove text-danger"></span>
+              <span class="text-danger icon-label">Delete</span>
+            </a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
   <div id='answer-comments-{{answer.pk}}' class='answer-comment-section'>
-    <p id="answer-comments-{{answer.pk}}" class="ac-title">comments</p>
-    <ul id="ac-list-{{answer.pk}}" class="answer-comment-list">
-      {% for ac in answer.answer_comment.all %}
-      <li>
-        <p id="answer-comment-{{ac.pk}}">
-          {{ac.text}}
-          {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-              <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
-                <span class="glyphicon glyphicon-remove text-danger"></span>
-                <span class="text-danger icon-label">Delete</span>
-              </a>
-          {% endif %}
-        </p>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="row Aligner">
+      <h4 id="answer-comments-{{answer.pk}}" class="comment-title ac-title col-md-1">comments</h4>
+      <ul id="ac-list-{{answer.pk}}" class="answer-comment-list">
+        {% for ac in answer.answer_comment.all %}
+        <li>
+          <p id="answer-comment-{{ac.pk}}">
+            {{ac.text}}
+            {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
+                <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
+                  <span class="glyphicon glyphicon-remove text-danger"></span>
+                  <span class="text-danger icon-label">Delete</span>
+                </a>
+            {% endif %}
+          </p>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
   <script>
     var answerCommentDiv = document.getElementsByClassName('answer-comment-section')[answerCount];
-    var answerCommentSection = answerCommentDiv.childNodes[3]
+    var answerCommentSection = answerCommentDiv.children[0].childNodes[3]
     var answer_comments = answerCommentSection.getElementsByTagName('li')
     var answerCommentId = answerCommentDiv.getAttribute('id').slice(16,answerCommentDiv.getAttribute('id').length)
     if (answer_comments.length > 2) {
@@ -45,6 +57,7 @@
       var loadComments = document.createElement("a");
       loadComments.href = '#'
       loadComments.id = 'load-answer-comments-'+answerCommentId
+      loadComments.className += 'load-more-answer-comments'
       loadComments.innerHTML = "Load More"
       parent.appendChild(newParagraph).appendChild(loadComments);
     }
@@ -64,3 +77,4 @@
     </form>
   </div>
 </div>
+<p>_______________________________________________________________________________________________</p>
