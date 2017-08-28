@@ -85,11 +85,36 @@
       theButton.className = ''
       theButton.className += 'btn btn-primary no-comment-button'
     } else if (answer_comments.length == 1) {
-      theButton.className = ''
-      theButton.className += 'btn btn-primary one-comment-button'
+      var spanTotal = 0
+      if (answer_comments[0].childNodes[1].childNodes[1]) {
+        spanTotal ++
+      }
+      if (spanTotal == 1) {
+        theButton.className = ''
+        theButton.className += 'btn btn-primary one-comment-button'
+      } else {
+        theButton.className = ''
+        theButton.className += 'btn btn-primary one-comment-no-span-button'
+      }
     } else if (answer_comments.length == 2) {
-      theButton.className = ''
-      theButton.className += 'btn btn-primary two-comment-button'  
+      var spanTotal = 0
+      if (answer_comments[0].childNodes[1].childNodes[1]) {
+        spanTotal ++
+      }
+
+      if (answer_comments[1].childNodes[1].childNodes[1]) {
+        spanTotal ++
+      }
+      if (spanTotal == 2) {
+        theButton.className = ''
+        theButton.className += 'btn btn-primary two-comment-two-span-button'
+      } else if (spanTotal == 1) {
+        theButton.className = ''
+        theButton.className += 'btn btn-primary two-comment-one-span-button'
+      } else if (spanTotal == 0) {
+        theButton.className = ''
+        theButton.className += 'btn btn-primary two-comment-no-span-button'
+      }
     } else {
       theButton.className = ''
       theButton.className += 'btn btn-primary answer-reveal-button'
