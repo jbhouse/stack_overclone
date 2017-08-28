@@ -52,6 +52,11 @@ def UpVoteAnswer(request, **kwargs):
     if users_answer_votes.user_answer_vote.all().filter(answer = answer).exists():
         user_vote_for_this_answer = users_answer_votes.user_answer_vote.all().filter(answer = answer).get()
         if user_vote_for_this_answer.upvote == True:
+            if request.is_ajax():
+                response_data = {}
+                response_data['pk'] = kwargs['pk']
+                response_data['count'] = 0
+                return JsonResponse(response_data)
             return redirect('questions:detail', pk=answer.question.pk)
         if user_vote_for_this_answer.downvote == True:
             user_vote_for_this_answer.upvote = True
@@ -59,12 +64,22 @@ def UpVoteAnswer(request, **kwargs):
             user_vote_for_this_answer.save()
             answer.votes += 2
             answer.save()
+            if request.is_ajax():
+                response_data = {}
+                response_data['pk'] = kwargs['pk']
+                response_data['count'] = 2
+                return JsonResponse(response_data)
             return redirect('questions:detail', pk=answer.question.pk)
     new_answer_vote = AnswerVote.objects.create_answer_vote(user, answer)
     new_answer_vote.upvote = True
     new_answer_vote.save()
     answer.votes += 1
     answer.save()
+    if request.is_ajax():
+        response_data = {}
+        response_data['pk'] = kwargs['pk']
+        response_data['count'] = 1
+        return JsonResponse(response_data)
     return redirect('questions:detail', pk=answer.question.pk)
 
 def DownVoteAnswer(request, **kwargs):
@@ -75,6 +90,11 @@ def DownVoteAnswer(request, **kwargs):
     if users_answer_votes.user_answer_vote.all().filter(answer = answer).exists():
         user_vote_for_this_answer = users_answer_votes.user_answer_vote.all().filter(answer = answer).get()
         if user_vote_for_this_answer.downvote == True:
+            if request.is_ajax():
+                response_data = {}
+                response_data['pk'] = kwargs['pk']
+                response_data['count'] = 0
+                return JsonResponse(response_data)
             return redirect('questions:detail', pk=answer.question.pk)
         if user_vote_for_this_answer.upvote == True:
             user_vote_for_this_answer.downvote = True
@@ -82,12 +102,22 @@ def DownVoteAnswer(request, **kwargs):
             user_vote_for_this_answer.save()
             answer.votes -= 2
             answer.save()
+            if request.is_ajax():
+                response_data = {}
+                response_data['pk'] = kwargs['pk']
+                response_data['count'] = 2
+                return JsonResponse(response_data)
             return redirect('questions:detail', pk=answer.question.pk)
     new_answer_vote = AnswerVote.objects.create_answer_vote(user, answer)
     new_answer_vote.downvote = True
     new_answer_vote.save()
     answer.votes -= 1
     answer.save()
+    if request.is_ajax():
+        response_data = {}
+        response_data['pk'] = kwargs['pk']
+        response_data['count'] = 1
+        return JsonResponse(response_data)
     return redirect('questions:detail', pk=answer.question.pk)
 
 

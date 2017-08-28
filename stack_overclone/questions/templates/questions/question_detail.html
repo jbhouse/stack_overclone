@@ -4,6 +4,36 @@
 
 {% block javascript %}
   <script>
+    $(".answer-votes").on('click','a',function(e) {
+      e.preventDefault();
+      var that = $(this)
+      if (that.attr('href').slice(1,13) == 'answers/upvo') {
+        upvoteAnswer();
+      } else if (that.attr('href').slice(1,13) == 'answers/down') {
+        downvoteAnswer();
+      }
+      function upvoteAnswer() {
+        $.ajax({
+          url  : that.attr('href'),
+          type : "POST",
+          success : function(json) {
+            var endLength = $("#answer-votes-"+json.pk).text().length
+            $("#answer-votes-"+json.pk).text('vote total: '+(parseInt($('#answer-votes-'+json.pk).text().slice(12,endLength))+json.count))
+          }
+        });
+      }
+      function downvoteAnswer() {
+        $.ajax({
+          url  : that.attr('href'),
+          type : "POST",
+          success : function(json) {
+            var endLength = $('#answer-votes-'+json.pk).text().length
+            $('#answer-votes-'+json.pk).text('vote total: '+(parseInt($('#answer-votes-'+json.pk).text().slice(12,endLength))-json.count))
+          }
+        });
+      }
+    })
+
     $(".answer-comment-button").on('click', function(e) {
       e.preventDefault();
       var that = $(this)
@@ -95,33 +125,38 @@
     $('.answers-list').on('click', "a", function(e){
       e.preventDefault();
       var that = $(this)
-      var id_len = that.attr('id').length
-      if (that.attr('id').slice(0,10) == 'delete-com') {
-        delete_comment();
-      } else {
-        if (that.attr('id').slice(0,10) == 'delete-ans'){
-          delete_answer();
+      if(that.attr('id')){
+        // since our answers-list contains 'a' tags that do not have id's,
+        // and which will be handled by a different event listener
+        // we will only be performing an action here if the click 'a' tag has an id
+        var id_len = that.attr('id').length
+        if (that.attr('id').slice(0,10) == 'delete-com') {
+          delete_comment();
+        } else {
+          if (that.attr('id').slice(0,10) == 'delete-ans'){
+            delete_answer();
+          }
         }
-      }
-      function delete_answer() {
-        $.ajax({
-          url : that.attr('href'),
-          type : "DELETE",
-          data : { pk: that.attr('id').slice(14, id_len) },
-          success: function() {
-            that.parent().parent().detach()
-          }
-        })
-      }
-      function delete_comment() {
-        $.ajax({
-          url : that.attr('href'),
-          type : "DELETE",
-          data : { pk: that.attr('id').slice(14, id_len) },
-          success: function(json) {
-            $('#answer-comment-'+json.pk).detach()
-          }
-        })
+        function delete_answer() {
+          $.ajax({
+            url : that.attr('href'),
+            type : "DELETE",
+            data : { pk: that.attr('id').slice(14, id_len) },
+            success: function() {
+              that.parent().parent().detach()
+            }
+          })
+        }
+        function delete_comment() {
+          $.ajax({
+            url : that.attr('href'),
+            type : "DELETE",
+            data : { pk: that.attr('id').slice(14, id_len) },
+            success: function(json) {
+              $('#answer-comment-'+json.pk).detach()
+            }
+          })
+        }
       }
     });
 
