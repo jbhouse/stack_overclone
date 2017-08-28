@@ -16,20 +16,45 @@
     <a href="{% url 'answers:downvote' pk=answer.pk %}">Downvote</a>
     {% endif %}
   </p>
-  <p>comments</p>
   <div id='answer-comments-{{answer.pk}}' class='answer-comment-section'>
-    {% for ac in answer.answer_comment.all %}
-      <p id="answer-comment-{{ac.pk}}">
-        {{ac.text}}
-        {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
-            <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
-              <span class="glyphicon glyphicon-remove text-danger"></span>
-              <span class="text-danger icon-label">Delete</span>
-            </a>
-        {% endif %}
-      </p>
-    {% endfor %}
+    <p id="answer-comments-{{answer.pk}}" class="ac-title">comments</p>
+    <ul id="ac-list-{{answer.pk}}" class="answer-comment-list">
+      {% for ac in answer.answer_comment.all %}
+      <li>
+        <p id="answer-comment-{{ac.pk}}">
+          {{ac.text}}
+          {% if user.is_authenticated and answer.user.username == request.user.username and not hide_delete %}
+              <a href="{% url 'comments:delete_answer_comment' pk=ac.pk %}" id="delete-comment-{{ac.pk}}" title="delete" class="answer-delete-button btn btn-simple">
+                <span class="glyphicon glyphicon-remove text-danger"></span>
+                <span class="text-danger icon-label">Delete</span>
+              </a>
+          {% endif %}
+        </p>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
+  <script>
+    var answerCommentDiv = document.getElementsByClassName('answer-comment-section')[answerCount];
+    var answerCommentSection = answerCommentDiv.childNodes[3]
+    var answer_comments = answerCommentSection.getElementsByTagName('li')
+    console.log(answer_comments.length)
+    if (answer_comments.length > 2) {
+      var parent = document.getElementsByClassName('ac-title')[answerCount];
+      var newParagraph = document.createElement("p");
+      var loadComments = document.createElement("a");
+      loadComments.href = '#'
+      loadComments.id = 'load-answer-comments'
+      loadComments.innerHTML = "Load More"
+      parent.appendChild(newParagraph).appendChild(loadComments);
+    }
+    for(var i = 0; i < answer_comments.length; i++) {
+      if (i > 1){
+        answer_comments[i].classList.add('hidden')
+      }
+    }
+    answerCount++
+  </script>
   <p><button type="button" id="answer-comment-button-{{answer.pk}}" class="btn btn-primary answer-comment-button">Comment</button></p>
   <div id="answer_comment_div-{{answer.pk}}" class='answer-comment container hidden'>
     <form action={% url 'comments:create_answer_comment' pk=answer.pk %} id={{answer.pk}} method='post'>
