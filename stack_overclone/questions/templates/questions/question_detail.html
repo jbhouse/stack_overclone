@@ -49,6 +49,7 @@
       var answerId = that.attr('id').slice(22,endChar)
       $(this).addClass('hidden')
       $("#answer_comment_div-"+answerId).removeClass('hidden')
+      // return here
     })
 
     $('#question-comment-button').on('click', function(e) {
