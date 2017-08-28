@@ -258,6 +258,9 @@
       <h2>
         Answers
       </h2>
+      <script>
+        var answerCount = 0
+      </script>
         {% for answer in question.answers.all %}
           {% include "answers/_answer.html" with answer=answer %}
         {% endfor %}
