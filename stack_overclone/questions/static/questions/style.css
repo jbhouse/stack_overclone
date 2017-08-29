@@ -1,3 +1,21 @@
+.bgg{
+  margin-left: 0.9%;
+  background-color: #D3D3D3;
+}
+
+#qc-list{
+  background-color: #D2B48C;
+  margin-left: 2.2%;
+}
+
+.answer-instance{
+  background-color: #ADD8E6;
+}
+
+.question-instance{
+  background-color: #ADD8E6;
+}
+
 .Aligner {
   display: flex;
   align-items: center;
@@ -5,6 +23,7 @@
 }
 
 .arrows {
+  margin-top: 1%;
   margin-left: -4%;
 }
 
@@ -34,6 +53,7 @@
 }
 
 .question-details {
+  background-color: #D3D3D3;
   margin-left: -3%;
 }
 
@@ -58,6 +78,8 @@
 }
 
 .answer-comment-list {
+  background-color: #D2B48C;
+  margin-left: 2.3%;
   margin-top: 1%;
 }
 

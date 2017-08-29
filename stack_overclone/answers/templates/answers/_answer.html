@@ -1,6 +1,6 @@
 <div class="answer-instance">
   <div class="row Aligner">
-    <div class="col-md-1">
+    <div class="col-md-1 bgg">
       <p id="answer-votes-{{answer.pk}}">vote total: {{answer.votes}}</p>
     </div>
     <div class="arrows col-md-1">
@@ -13,7 +13,7 @@
       </p>
       {% endif %}
     </div>
-    <div class="col-md-4 answer-details">
+    <div class="col-md-4 answer-details bgg">
       <p><strong>{{answer.text}}</strong></p>
       <p>
         answered by: <a href="{% url 'accounts:detail' pk=answer.user.id %}">{{answer.user.username}}</a> on: {{answer.created_at}}
