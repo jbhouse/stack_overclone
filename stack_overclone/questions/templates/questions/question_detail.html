@@ -217,60 +217,62 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'questions/style.css' %}" />
 <div class="container">
-  <div class="row Aligner">
-    <div class="col-md-1">
-      <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
-    </div>
-    <div class="arrows col-md-1">
-      {% if user.is_authenticated and answer.user.username != request.user.username and not hide_delete %}
-        <p class='question-votes'>
-          <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">
-            <span class="glyphicon glyphicon-arrow-up"></span>
-          </a>
-        </p>
-        <p class='question-votes'>
-          <a id='question-downvote-{{question.pk}}' href="{% url 'questions:downvote' pk=question.pk %}">
-            <span class="glyphicon glyphicon-arrow-down"></span>
-          </a>
-        </p>
-      {% endif %}
-    </div>
-    <div class="col-md-4 question-details">
-      <h2>
-        title: {{question.title}}
-      </h2>
-      <h3>
-        details: {{question.details}}
-      </h3>
-      <p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
-      <p>
-        {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
-            <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
-              <span class="glyphicon glyphicon-remove text-danger"></span>
-              <span class="text-danger icon-label">Delete</span>
-            </a>
-        {% endif %}
-      </p>
-    </div>
-  </div>
-  <div id="question-comment-div">
+  <div class="question-instance">
     <div class="row Aligner">
-      <h4 id="comment-title" class="col-md-1">comments</h4>
-      <ul id="qc-list" class="question-comment-list">
-        {% for comment in question_comments %}
-        <li id="question-comment-{{comment.pk}}" class="hidden">
-          <p>
-            {{comment.text}}
-            {% if user.is_authenticated and comment.user.username == request.user.username %}
-                <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
-                  <span class="glyphicon glyphicon-remove text-danger"></span>
-                  <span class="text-danger icon-label">Delete</span>
-                </a>
-            {% endif %}
+      <div class="bgg col-md-1">
+        <p id='vote-total-{{question.pk}}'>vote total: {{question.votes}}</p>
+      </div>
+      <div class="arrows col-md-1">
+        {% if user.is_authenticated and answer.user.username != request.user.username and not hide_delete %}
+          <p class='question-votes'>
+            <a id='question-upvote-{{question.pk}}' href="{% url 'questions:upvote' pk=question.pk %}">
+              <span class="glyphicon glyphicon-arrow-up"></span>
+            </a>
           </p>
-        </li>
-        {% endfor %}
-      </ul>
+          <p class='question-votes'>
+            <a id='question-downvote-{{question.pk}}' href="{% url 'questions:downvote' pk=question.pk %}">
+              <span class="glyphicon glyphicon-arrow-down"></span>
+            </a>
+          </p>
+        {% endif %}
+      </div>
+      <div class="col-md-4 question-details">
+        <h2>
+          title: {{question.title}}
+        </h2>
+        <h3>
+          details: {{question.details}}
+        </h3>
+        <p>asked by: <a href="{% url 'accounts:detail' pk=question.user.id %}">{{question.user.username}}</a>,  on: {{question.created_at}}</p>
+        <p>
+          {% if user.is_authenticated and question.user.username == request.user.username and not hide_delete %}
+              <a href="{% url 'questions:delete' pk=question.pk %}" title="delete" class="btn btn-simple">
+                <span class="glyphicon glyphicon-remove text-danger"></span>
+                <span class="text-danger icon-label">Delete</span>
+              </a>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+    <div id="question-comment-div">
+      <div class="row Aligner">
+        <h4 id="comment-title" class="col-md-1">comments</h4>
+        <ul id="qc-list" class="question-comment-list">
+          {% for comment in question_comments %}
+          <li id="question-comment-{{comment.pk}}" class="hidden">
+            <p>
+              {{comment.text}}
+              {% if user.is_authenticated and comment.user.username == request.user.username %}
+                  <a href="{% url 'comments:delete_question_comment' pk=comment.pk %}" title="delete" id={{comment.pk}} class="btn btn-simple">
+                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                    <span class="text-danger icon-label">Delete</span>
+                  </a>
+              {% endif %}
+            </p>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </div>
   <script>
