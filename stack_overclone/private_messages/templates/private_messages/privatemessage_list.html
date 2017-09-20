@@ -1,13 +1,27 @@
-{% extends "base.html" %}
 {% load bootstrap3 %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'private_messages/style.css' %}" />
 
 {% block javascript %}
   <script>
+    function cancelMessage(){
+      console.log(document.getElementById('new-message-button'))
+      document.getElementById('new-message-div').classList.add('hidden')
+      document.getElementById('new-message-button').classList.remove('hidden')
+    }
+    document.getElementById('cancel-message').addEventListener('click', cancelMessage);
+
     $('#new-message-button').on('click',function(e){
       $('#new-message-div').removeClass('hidden');
-      $('#new-message-button').hide();
+      $('#new-message-button').addClass('hidden');
+    })
+
+    $('.reply-button').on('click',function(e){
+      e.preventDefault();
+      var that = $(this)
+      var replyButtonId = that.attr('id').slice(13,that.attr('id').length)
+      that.parent().addClass('hidden')
+      that.parent().parent().append("<form id='reply-form-"+replyButtonId+"' class='reply-message' method='post'><div class='col-md-2'><input id='reply-subject-"+replyButtonId+"' class='form-control' type='text' placeholder='subject' value=''></div><div class='form-group'><textarea id='reply-message-"+replyButtonId+"' class='form-control' rows='4' placeholder='message' value=''></textarea></div><input type='submit' value='message' class='btn btn-primary' name='submit'><button class='cancelmessage btn btn-simple'>cancel</button></form>")
     })
 
     $('.inbox-messages').on('click','a',function(e){
@@ -37,8 +51,7 @@
           type : "POST",
           data : { recipient: $('#id_recipient').val(), subject: $('#id_subject').val(), message: $('#id_message').val() },
           success : function(json) {
-            $('#new-message-div').hide();
-            $('#new-message-button').show();
+            cancelMessage()
             if (json.recipient_id == json.sender_id) {
               $('.inbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
               $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
@@ -61,7 +74,10 @@
       <form method="post">
         {% csrf_token %}
         {% bootstrap_form message_form %}
-        <input type='submit' class='btn btn-primary' value='Send Message'>
+        <p>
+          <input type='submit' class='btn btn-primary' value='Send Message'>
+          <button id="cancel-message" class='btn btn-primary' type="button" name="button">Cancel</button>
+        </p>
       </form>
     </div>
   </div>
