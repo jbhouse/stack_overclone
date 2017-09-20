@@ -14,6 +14,16 @@
 
     document.getElementById('cancel-message').addEventListener('click', cancelMessage);
 
+    $('.inbox-messages').on('click','button',function(e){
+      e.preventDefault();
+      var that = $(this)
+      if (that.attr('id') == 'cancelmessage') {
+        that.parent().addClass('hidden')
+        that.parent().prev().removeClass('hidden')
+        replying = false
+      }
+    })
+
     function sendMessage(){
       console.log($('#id_recipient').val());
       $.ajax({
@@ -51,8 +61,10 @@
           type : "POST",
           data : { recipient: recipientId, subject: subject, message: message },
           success : function(){
-            that.parent().addClass('hidden')
-            that.parent().prev().removeClass('hidden')
+            that.addClass('hidden')
+            that.prev().removeClass('hidden')
+            document.getElementById('reply-subject-'+responseId).value = ''
+            document.getElementById('reply-message-'+responseId).value = ''
             replying = false
           }
         })
@@ -78,16 +90,6 @@
         } else {
           alert('Reply to one person at a time please')
         }
-      }
-    })
-
-    $('.inbox-messages').on('click','button',function(e){
-      e.preventDefault();
-      var that = $(this)
-      if (that.attr('id') == 'cancelmessage') {
-        that.parent().addClass('hidden')
-        that.parent().prev().removeClass('hidden')
-        replying = false
       }
     })
 
