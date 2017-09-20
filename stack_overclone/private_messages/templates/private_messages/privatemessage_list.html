@@ -14,9 +14,49 @@
 
     document.getElementById('cancel-message').addEventListener('click', cancelMessage);
 
+    function sendMessage(){
+      console.log($('#id_recipient').val());
+      $.ajax({
+        url  : "{% url 'private_messages:new_message' %}",
+        type : "POST",
+        data : { recipient: $('#id_recipient').val(), subject: $('#id_subject').val(), message: $('#id_message').val() },
+        success : function(json) {
+          cancelMessage()
+          if (json.recipient_id == json.sender_id) {
+            $('.inbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
+            $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
+          } else {
+            $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
+          }
+        }
+      })
+    }
+
     $('#new-message-button').on('click',function(e){
       $('#new-message-div').removeClass('hidden');
       $('#new-message-button').addClass('hidden');
+    })
+
+    $('.inbox-messages').on('submit', 'form', function(e) {
+      e.preventDefault();
+      var that = $(this);
+      var responseId = that.parent().children(1).children().attr('href').slice(18,that.parent().children(1).children().attr('href').length -1);
+      var recipientId = document.getElementById('inbox-message-'+responseId).children[1].children[0].getAttribute("href").slice(18,document.getElementById('inbox-message-'+responseId).children[1].children[0].getAttribute("href").length - 1)
+      var subject = document.getElementById('reply-subject-'+responseId).value
+      var message = document.getElementById('reply-message-'+responseId).value
+      sendReply();
+      function sendReply(){
+        $.ajax({
+          url  : "{% url 'private_messages:new_message' %}",
+          type : "POST",
+          data : { recipient: recipientId, subject: subject, message: message },
+          success : function(){
+            that.parent().addClass('hidden')
+            that.parent().prev().removeClass('hidden')
+            replying = false
+          }
+        })
+      }
     })
 
     $('.reply-button').on('click',function(e){
@@ -51,14 +91,6 @@
       }
     })
 
-    // $('.inbox-messages').on('submit', 'form', function(e) {
-    //   e.preventDefault();
-    //   var that = $(this);
-    //   var recipientId = that.parent().children(1).children().attr('href').slice(18,that.parent().children(1).children().attr('href').length -1);
-    //   // console.log(that.attr('class'));
-    //   console.log(that);
-    // })
-
     $('.inbox-messages').on('click','a',function(e){
       e.preventDefault();
       that = $(this)
@@ -79,23 +111,6 @@
       e.preventDefault();
       that = $(this)
       sendMessage();
-
-      function sendMessage(){
-        $.ajax({
-          url  : '{% url 'private_messages:new_message' %}',
-          type : "POST",
-          data : { recipient: $('#id_recipient').val(), subject: $('#id_subject').val(), message: $('#id_message').val() },
-          success : function(json) {
-            cancelMessage()
-            if (json.recipient_id == json.sender_id) {
-              $('.inbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
-              $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
-            } else {
-              $('.outbox-messages').prepend("<div id='inbox-message-"+json.message_pk+"'><h3 id='subject_line'>subject: <a href='/messages/details/"+json.message_pk+"/'>"+json.subject+"</a></h3><p>sent by: <a href='/accounts/profile/"+json.sender_id+"'>"+json.username+"</a></p><p><a href='/accounts/profile/"+json.sender_id+"/'></a></p><p><a href='/messages/delete/"+json.message_pk+"/' title='delete' class='btn btn-simple'><span class='glyphicon glyphicon-remove text-danger'></span><span class='text-danger icon-label'>Delete</span></a></p></div>")
-            }
-          }
-        })
-      }
     })
   </script>
 {% endblock %}
