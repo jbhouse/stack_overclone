@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% load bootstrap3 %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'private_messages/style.css' %}" />
@@ -9,6 +10,7 @@
       document.getElementById('new-message-div').classList.add('hidden')
       document.getElementById('new-message-button').classList.remove('hidden')
     }
+
     document.getElementById('cancel-message').addEventListener('click', cancelMessage);
 
     $('#new-message-button').on('click',function(e){
@@ -21,8 +23,25 @@
       var that = $(this)
       var replyButtonId = that.attr('id').slice(13,that.attr('id').length)
       that.parent().addClass('hidden')
-      that.parent().parent().append("<form id='reply-form-"+replyButtonId+"' class='reply-message' method='post'><div class='col-md-2'><input id='reply-subject-"+replyButtonId+"' class='form-control' type='text' placeholder='subject' value=''></div><div class='form-group'><textarea id='reply-message-"+replyButtonId+"' class='form-control' rows='4' placeholder='message' value=''></textarea></div><input type='submit' value='message' class='btn btn-primary' name='submit'><button class='cancelmessage btn btn-simple'>cancel</button></form>")
+      that.parent().parent().append("<form id='reply-form-"+replyButtonId+"' class='reply-message' method='post'><div class='col-md-2'><input id='reply-subject-"+replyButtonId+"' class='form-control' type='text' placeholder='subject' value=''></div><div class='form-group'><textarea id='reply-message-"+replyButtonId+"' class='form-control' rows='4' placeholder='message' value=''></textarea></div><input type='submit' value='message' class='btn btn-primary' name='submit'><button id='cancelmessage' class='btn btn-simple'>cancel</button></form>")
     })
+
+    $('.inbox-messages').on('click','button',function(e){
+      e.preventDefault();
+      var that = $(this)
+      if (that.attr('id') == 'cancelmessage') {
+        that.parent().addClass('hidden')
+        that.parent().prev().removeClass('hidden')
+      }
+    })
+
+    // $('.inbox-messages').on('submit', 'form', function(e) {
+    //   e.preventDefault();
+    //   var that = $(this);
+    //   var recipientId = that.parent().children(1).children().attr('href').slice(18,that.parent().children(1).children().attr('href').length -1);
+    //   // console.log(that.attr('class'));
+    //   console.log(that);
+    // })
 
     $('.inbox-messages').on('click','a',function(e){
       e.preventDefault();
