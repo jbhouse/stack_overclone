@@ -5,9 +5,9 @@
 
 {% block javascript %}
   <script>
-    var someVar
+    var someVar = 0
+    var replying
     function cancelMessage(){
-      console.log(document.getElementById('new-message-button'))
       document.getElementById('new-message-div').classList.add('hidden')
       document.getElementById('new-message-button').classList.remove('hidden')
     }
@@ -27,11 +27,16 @@
         that.parent().next().removeClass('hidden')
         that.parent().addClass('hidden')
       } else {
-        appendReply()
-        function appendReply(){
-          that.parent().addClass('hidden')
-          that.parent().parent().append("<form id='reply-form-"+replyButtonId+"' class='reply-message' method='post'><div class='col-md-2'><input id='reply-subject-"+replyButtonId+"' class='form-control' type='text' placeholder='subject' value=''></div><div class='form-group'><textarea id='reply-message-"+replyButtonId+"' class='form-control' rows='4' placeholder='message' value=''></textarea></div><input type='submit' value='message' class='btn btn-primary' name='submit'><button id='cancelmessage' class='btn btn-simple'>cancel</button></form>")
-          someVar = replyButtonId
+          if (replying != true) {
+            appendReply()
+            function appendReply(){
+              that.parent().addClass('hidden')
+              that.parent().parent().append("<form id='reply-form-"+replyButtonId+"' class='reply-message' method='post'><div class='col-md-2'><input id='reply-subject-"+replyButtonId+"' class='form-control' type='text' placeholder='subject' value=''></div><div class='form-group'><textarea id='reply-message-"+replyButtonId+"' class='form-control' rows='4' placeholder='message' value=''></textarea></div><input type='submit' value='message' class='btn btn-primary' name='submit'><button id='cancelmessage' class='btn btn-simple'>cancel</button></form>")
+              someVar = replyButtonId
+              replying = true
+          }
+        } else {
+          alert('Reply to one person at a time please')
         }
       }
     })
@@ -42,6 +47,7 @@
       if (that.attr('id') == 'cancelmessage') {
         that.parent().addClass('hidden')
         that.parent().prev().removeClass('hidden')
+        replying = false
       }
     })
 
